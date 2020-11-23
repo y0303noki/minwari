@@ -7,7 +7,7 @@ import 'package:trip_money_local/domain/db_table/item.dart';
 class AddUpdateItemModel extends ChangeNotifier {
   String title = '';
   int money = 0;
-  List<Item> itemsDecoded;
+  List<Item> items;
 
   Future addItem(item) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -42,7 +42,7 @@ class AddUpdateItemModel extends ChangeNotifier {
     // 更新日が最新順にソート
     itemsDecoded.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
-    this.itemsDecoded = itemsDecoded;
+    this.items = itemsDecoded;
     notifyListeners();
     return itemsDecoded;
   }
@@ -58,7 +58,7 @@ class AddUpdateItemModel extends ChangeNotifier {
     // stringからList<Item>にデコード
     List<Item> itemsDecoded = Item.decodeItems(itemsData);
 
-    this.itemsDecoded = itemsDecoded;
+    this.items = itemsDecoded;
     return itemsDecoded;
   }
 

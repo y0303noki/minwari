@@ -18,10 +18,9 @@ class HomePage extends StatelessWidget {
         child: Consumer<AddUpdateItemModel>(
             builder: (consumerContext, model, child) {
           print('consumer');
-          if (model.itemsDecoded == null) {
+          if (model.items == null) {
           } else {
-            final test2 = model.itemsDecoded;
-            listTiles = _setItems(test2);
+            listTiles = _setItems(model.items);
           }
 
           return Scaffold(
@@ -110,78 +109,3 @@ _setItems(List<Item> items) {
       .toList();
   return listItems;
 }
-
-//openDialog(BuildContext context, AddUpdateItemModel model) {
-//  String title = '';
-//  int money = 0;
-//  String person = '';
-//  showDialog<Answers>(
-//    context: context,
-//    builder: (BuildContext context) => AlertDialog(
-//      title: Text('タイトルを入力'),
-//      content: Column(
-//        children: [
-//          TextField(
-//            autofocus: true,
-//            decoration: InputDecoration(
-//              labelText: 'イベントの名前',
-//            ),
-//            onChanged: (value) {
-//              title = value;
-//            },
-//          ),
-//          TextField(
-//            autofocus: true,
-//            decoration: InputDecoration(
-//              labelText: '金額',
-//            ),
-//            onChanged: (value) {
-//              money = int.parse(value);
-//            },
-//          ),
-//          TextField(
-//            autofocus: true,
-//            decoration: InputDecoration(
-//              labelText: '人',
-//            ),
-//            onChanged: (value) {
-//              person = value;
-//            },
-//          ),
-//        ],
-//      ),
-//      actions: [
-//        SimpleDialogOption(
-//          child: Text('Yes'),
-//          onPressed: () {
-//            Navigator.pop(context, Answers.OK);
-//          },
-//        ),
-//        SimpleDialogOption(
-//          child: Text('NO'),
-//          onPressed: () {
-//            Navigator.pop(context, Answers.CANCEL);
-//          },
-//        ),
-//      ],
-//    ),
-//  ).then((value) async {
-//    switch (value) {
-//      case Answers.OK:
-//        final String now = DateTime.now().toString();
-//        final Item newItem = Item(
-//            id: -1,
-//            tripId: -3,
-//            title: title,
-//            money: money,
-//            createdAt: now,
-//            updatedAt: now);
-//        await model.addItem(newItem);
-//        print('アイテム追加した');
-//        return 'TEST!';
-//        break;
-//      case Answers.CANCEL:
-//        break;
-//    }
-//  });
-//}
