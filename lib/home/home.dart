@@ -19,7 +19,6 @@ class HomePage extends StatelessWidget {
             builder: (consumerContext, model, child) {
           print('consumer');
           if (model.itemsDecoded == null) {
-            print('Empty');
           } else {
             final test2 = model.itemsDecoded;
             listTiles = _setItems(test2);
