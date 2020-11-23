@@ -42,8 +42,12 @@ class HomePage extends StatelessWidget {
                     IconButton(
                         icon: Icon(Icons.update),
                         onPressed: () async {
-                          final test = await model.getItems(-3);
-                          listTiles = _setItems(test);
+                          List<Item> items = await model.getItems(-3);
+                          if (items == null || items.isEmpty) {
+                            return;
+                          }
+
+                          listTiles = _setItems(items);
                         }),
                     // メンバー管理ボタン
                     IconButton(

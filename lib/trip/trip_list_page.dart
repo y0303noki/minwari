@@ -13,13 +13,13 @@ class TripListPage extends StatelessWidget {
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateTripModel>(
         create: (_) => AddUpdateTripModel()
-          ..getTrips().then((value) => listTiles = _setTrips(value)),
+          ..getTrips().then((value) => listTiles = _setTrips(value, context)),
         child: Consumer<AddUpdateTripModel>(
             builder: (consumerContext, model, child) {
           print('trip_list_page Consumer');
           if (model.trips == null) {
           } else {
-            listTiles = _setTrips(model.trips);
+            listTiles = _setTrips(model.trips, context);
           }
           return Scaffold(
             appBar: AppBar(
@@ -55,7 +55,12 @@ class TripListPage extends StatelessWidget {
                         icon: Icon(Icons.update),
                         onPressed: () async {
                           final test = await model.getTrips();
-                          listTiles = _setTrips(test);
+                          listTiles = _setTrips(test, context);
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () async {
+                          await model.deleteAllTrip();
                         }),
                   ],
                   // メンバー管理ボタン
@@ -91,11 +96,16 @@ class TripListPage extends StatelessWidget {
   }
 }
 
-_setTrips(List<Trip> members) {
-  final listTrips = members
-      .map((member) => ListTile(
+_setTrips(List<Trip> trips, BuildContext context) {
+  final listTrips = trips
+      .map((trip) => ListTile(
             leading: Icon(Icons.star),
-            title: Text(member.name),
+            title: Text(trip.name),
+            onLongPress: () async {
+              print('longpress');
+              await AddUpdateTripModel().selectedTrip(trip);
+              Navigator.pop(context);
+            },
           ))
       .toList();
   return listTrips;

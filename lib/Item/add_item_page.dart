@@ -101,7 +101,7 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
     final String now = DateTime.now().toString();
     final Item newItem = Item(
         id: -1,
-        tripId: -3,
+        tripId: '',
         title: model.title,
         money: model.money,
         createdAt: now,
@@ -141,82 +141,5 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
         );
       },
     );
-  }
-}
-
-class DialogClass {
-  openDialog(BuildContext context) {
-    String title = '';
-    int money = 0;
-    String person = '';
-    showDialog<Answers>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text('タイトルを入力'),
-        content: Column(
-          children: [
-            TextField(
-              autofocus: true,
-              decoration: InputDecoration(
-                labelText: 'イベントの名前',
-              ),
-              onChanged: (value) {
-                title = value;
-              },
-            ),
-            TextField(
-              autofocus: true,
-              decoration: InputDecoration(
-                labelText: '金額',
-              ),
-              onChanged: (value) {
-                money = int.parse(value);
-              },
-            ),
-            TextField(
-              autofocus: true,
-              decoration: InputDecoration(
-                labelText: '人',
-              ),
-              onChanged: (value) {
-                person = value;
-              },
-            ),
-          ],
-        ),
-        actions: [
-          SimpleDialogOption(
-            child: Text('Yes'),
-            onPressed: () {
-              Navigator.pop(context, Answers.OK);
-            },
-          ),
-          SimpleDialogOption(
-            child: Text('NO'),
-            onPressed: () {
-              Navigator.pop(context, Answers.CANCEL);
-            },
-          ),
-        ],
-      ),
-    ).then((value) async {
-      switch (value) {
-        case Answers.OK:
-          final String now = DateTime.now().toString();
-          final Item newItem = Item(
-              id: -1,
-              tripId: -3,
-              title: title,
-              money: money,
-              createdAt: now,
-              updatedAt: now);
-          await AddUpdateItemModel().addItem(newItem);
-          print('アイテム追加した');
-          return 'TEST!';
-          break;
-        case Answers.CANCEL:
-          break;
-      }
-    });
   }
 }

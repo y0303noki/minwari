@@ -48,4 +48,49 @@ class AddUpdateTripModel extends ChangeNotifier {
     notifyListeners();
     return tripsDecoded;
   }
+
+  Future deleteAllTrip() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'trips';
+    prefs.remove(key);
+    notifyListeners();
+  }
+
+  Future getSelectedTripId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final selectedTripId = 'selectedTripId';
+    return prefs.getString(selectedTripId);
+  }
+
+  Future selectedTrip(Trip selectedTrip) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'trips';
+    final tripsData = prefs.getString(key);
+    if (tripsData == null) {
+      return null;
+    }
+
+    List<Trip> tripsDecoded = Trip.decodeTrips(tripsData);
+    this.trips = tripsDecoded;
+
+    String selectedId = '';
+
+    this.trips.forEach((trip) {
+      if (trip.id == selectedTrip.id) {
+        trip.isSelected = true;
+        selectedId = trip.id;
+        print(trip.name);
+      } else {
+        trip.isSelected = false;
+      }
+    });
+
+    final tripsEncoded = Trip.encodeTrips(this.trips);
+    prefs.setString(key, tripsEncoded);
+
+    // selectedTripをストレージに保管する方法
+    final selectedTripId = 'selectedTripId';
+    prefs.setString(selectedTripId, selectedId);
+    notifyListeners();
+  }
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class Item {
   final int id;
-  final int tripId;
+  String tripId;
   final String title;
   final int money;
   final String createdAt;

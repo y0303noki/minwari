@@ -4,16 +4,24 @@ class Trip {
   String id;
   final String name;
   final String memo;
+  bool isSelected = false;
   String createdAt;
   String updatedAt;
 
-  Trip({this.id, this.name, this.memo, this.createdAt, this.updatedAt});
+  Trip(
+      {this.id,
+      this.name,
+      this.memo,
+      this.isSelected,
+      this.createdAt,
+      this.updatedAt});
 
   factory Trip.fromJson(Map<String, dynamic> jsonData) {
     return Trip(
       id: jsonData['id'],
       name: jsonData['name'],
       memo: jsonData['memo'],
+      isSelected: jsonData['isSelected'],
       createdAt: jsonData['createdAt'],
       updatedAt: jsonData['updatedAt'],
     );
@@ -23,6 +31,7 @@ class Trip {
         'id': trip.id,
         'name': trip.name,
         'memo': trip.memo,
+        'isSelected': trip.isSelected,
         'createdAt': trip.createdAt,
         'updatedAt': trip.updatedAt,
       };
