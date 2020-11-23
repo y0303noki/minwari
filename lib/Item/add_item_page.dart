@@ -48,12 +48,6 @@ class AddItemPage extends StatelessWidget {
               centerTitle: true,
               elevation: 0.0,
             ),
-//        body: ChangeNotifierProvider<AddUpdateMemberModel>(
-//          // 画面遷移時にメンバーを表示させる
-//          create: (_) => AddUpdateMemberModel()
-//            ..getMembers(-3).then((value) => listTiles = _setMembers(value)),
-//          child: Consumer<AddUpdateMemberModel>(
-//              builder: (consumerContext, model, child) {
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(

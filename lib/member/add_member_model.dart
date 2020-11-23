@@ -5,6 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
 
 class AddUpdateMemberModel extends ChangeNotifier {
+  String name = '';
+  String memo = '';
+  List<Member> members;
+
   Future addMember(member) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'members_${member.tripId}';
@@ -35,8 +39,15 @@ class AddUpdateMemberModel extends ChangeNotifier {
 
     // stringからList<Member>にデコード
     List<Member> membersDecoded = Member.decodeMembers(membersData);
-
+    this.members = membersDecoded;
     notifyListeners();
     return membersDecoded;
+  }
+
+  Future deleteAllMember(tripId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'members_$tripId';
+    prefs.remove(key);
+    notifyListeners();
   }
 }
