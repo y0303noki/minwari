@@ -6,6 +6,10 @@ import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:uuid/uuid.dart';
 
 class AddUpdateTripModel extends ChangeNotifier {
+  String name = '';
+  String memo = '';
+  List<Trip> trips;
+
   Future addTrip(Trip trip) async {
     trip.id = Uuid().v1();
     trip.createdAt = DateTime.now().toString();
@@ -40,7 +44,7 @@ class AddUpdateTripModel extends ChangeNotifier {
 
     // stringからList<Trip>にデコード
     List<Trip> tripsDecoded = Trip.decodeTrips(tripsData);
-
+    this.trips = tripsDecoded;
     notifyListeners();
     return tripsDecoded;
   }

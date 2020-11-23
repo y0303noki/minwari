@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trip_money_local/Item/add_item_page.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
-import 'package:trip_money_local/header/header.dart';
+import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
+import 'package:trip_money_local/trip/add_trip_page.dart';
 
 class TripListPage extends StatelessWidget {
   List<Widget> listTiles = [];
@@ -17,19 +17,39 @@ class TripListPage extends StatelessWidget {
         child: Consumer<AddUpdateTripModel>(
             builder: (consumerContext, model, child) {
           print('trip_list_page Consumer');
+          if (model.trips == null) {
+          } else {
+            listTiles = _setTrips(model.trips);
+          }
           return Scaffold(
-            appBar: Header(),
+            appBar: AppBar(
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                          fullscreenDialog: false),
+                    );
+                  },
+                ),
+              ),
+              actions: [],
+              title: Text(
+                'ホーム',
+              ),
+              backgroundColor: Colors.black87,
+              centerTitle: true,
+              elevation: 0.0,
+            ),
             body: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // 戻るボタン
-                    IconButton(
-                        icon: Icon(Icons.arrow_back_ios),
-                        onPressed: () async {
-                          Navigator.pop(context);
-                        }),
                     // 更新ボタン（ダサいので変えたい）
                     IconButton(
                         icon: Icon(Icons.update),
@@ -50,7 +70,16 @@ class TripListPage extends StatelessWidget {
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 // アイテム追加ダイアログ呼び出し
-                openTripDialog(context, model);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddTripPage(),
+                      fullscreenDialog: true),
+                ).then((value) {
+                  // ここで画面遷移から戻ってきたことを検知できる
+                  print('モドてきたtrip');
+                  model.getTrips();
+                });
               },
               child: Icon(Icons.add_box),
               backgroundColor: Colors.green,
@@ -60,62 +89,6 @@ class TripListPage extends StatelessWidget {
       ),
     );
   }
-}
-
-void openTripDialog(BuildContext context, AddUpdateTripModel model) {
-  String name = '';
-  String memo = '';
-  showDialog<Answers>(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: Text('名前を入力'),
-      content: Column(
-        children: [
-          TextField(
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: '旅行の名前',
-            ),
-            onChanged: (value) {
-              name = value;
-            },
-          ),
-          TextField(
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: 'メモ（いらん？）',
-            ),
-            onChanged: (value) {
-              memo = value;
-            },
-          ),
-        ],
-      ),
-      actions: [
-        SimpleDialogOption(
-          child: Text('Yes'),
-          onPressed: () {
-            Navigator.pop(context, Answers.OK);
-          },
-        ),
-        SimpleDialogOption(
-          child: Text('NO'),
-          onPressed: () {
-            Navigator.pop(context, Answers.CANCEL);
-          },
-        ),
-      ],
-    ),
-  ).then((value) async {
-    switch (value) {
-      case Answers.OK:
-        final Trip newTrip = Trip(name: name, memo: memo);
-        await model.addTrip(newTrip);
-        break;
-      case Answers.CANCEL:
-        break;
-    }
-  });
 }
 
 _setTrips(List<Trip> members) {
