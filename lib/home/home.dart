@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
           if (model.items == null) {
             listTiles = [];
           } else {
-            listTiles = _setItems(model.items);
+            listTiles = _setItems(model.items, model);
           }
 
           if (model.selectedTrip == null) {
@@ -71,7 +71,7 @@ class HomePage extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.share),
                       onPressed: () async {
-                        model.deleteAllItem(-3);
+                        model.deleteAllItem();
                       },
                     ),
                     // 更新ボタン（ダサいので変えたい）
@@ -83,7 +83,7 @@ class HomePage extends StatelessWidget {
                             return;
                           }
 
-                          listTiles = _setItems(items);
+                          listTiles = _setItems(items, model);
                         }),
                     // メンバー管理ボタン
                     IconButton(
@@ -140,13 +140,38 @@ const List<Widget> listTiles = const [
   ),
 ];
 
-_setItems(List<Item> items) {
+List<Widget> _setItems(List<Item> items, AddUpdateItemModel model) {
+  if (items == null) {
+    return [];
+  }
   final listItems = items
-      .map((item) => ListTile(
+      .map(
+        // 左右スワイプで消せるように
+        (item) => Dismissible(
+          key: Key(item.id),
+          onDismissed: (direction) {
+            // スワイプ方向がendToStart（画面左から右）の場合の処理
+            if (direction == DismissDirection.endToStart) {
+              print(1);
+              model.deleteItem(item);
+              // スワイプ方向がstartToEnd（画面右から左）の場合の処理
+            } else {
+              print(2);
+            }
+          },
+          // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
+          background: Container(color: Colors.blue),
+
+          // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
+          secondaryBackground: Container(color: Colors.red),
+
+          child: ListTile(
             leading: Icon(Icons.map),
             title: Text(item.title),
             subtitle: Text(item.tripId),
-          ))
+          ),
+        ),
+      )
       .toList();
   return listItems;
 }

@@ -5,11 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
+import 'package:uuid/uuid.dart';
 
 class AddUpdateItemModel extends ChangeNotifier {
   String title = '';
   int money = 0;
-  List<Item> items;
+  List<Item> items = [];
   Trip selectedTrip;
 
   Future addItem(item) async {
@@ -17,13 +18,15 @@ class AddUpdateItemModel extends ChangeNotifier {
     final tripId = await AddUpdateTripModel().getSelectedTripId();
     item.tripId = tripId;
     final key = 'items_${item.tripId}';
-    print(item.tripId);
     var itemsData = prefs.getString(key);
     // 保存データがない時　通常はサンプルデータを保存するのでありえない
+    print('itemsData:$itemsData');
     if (itemsData == null) {
       final String now = DateTime.now().toString();
+      final uuid = Uuid().v1();
+      print('uuid:$uuid');
       Item tesItem = Item(
-          id: -1,
+          id: uuid,
           tripId: tripId,
           title: 'test',
           money: 0,
@@ -79,15 +82,32 @@ class AddUpdateItemModel extends ChangeNotifier {
 
     // stringからList<Item>にデコード
     List<Item> itemsDecoded = Item.decodeItems(itemsData);
-
-    this.items = itemsDecoded;
     return itemsDecoded;
   }
 
-  Future deleteAllItem(tripId) async {
+  // 開発用、ほぼ使わない
+  Future deleteAllItem() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final key = 'items_$tripId';
-    prefs.remove(key);
+    List<Trip> trips = await AddUpdateTripModel().getTrips();
+    for (var value in trips) {
+      print('tripId:${value.id}');
+      final key = 'items_${value.id}';
+      prefs.remove(key);
+    }
     notifyListeners();
+  }
+
+  Future deleteItem(Item deleteItem) async {
+    String selectedTripId = await AddUpdateTripModel().getSelectedTripId();
+    final key = 'items_$selectedTripId';
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Item> items = await getItems2(selectedTripId);
+
+    items.removeWhere((item) => item.id == deleteItem.id);
+    final itemsEncoded = Item.encodeItems(items);
+    prefs.setString(key, itemsEncoded);
+    // itemsを最新にしないと怒られる
+    await getItems();
   }
 }

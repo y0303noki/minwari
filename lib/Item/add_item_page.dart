@@ -6,6 +6,7 @@ import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/header/header.dart';
 import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
+import 'package:uuid/uuid.dart';
 
 enum Answers { OK, CANCEL }
 
@@ -100,7 +101,7 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
   try {
     final String now = DateTime.now().toString();
     final Item newItem = Item(
-        id: -1,
+        id: Uuid().v1(),
         tripId: '',
         title: model.title,
         money: model.money,
