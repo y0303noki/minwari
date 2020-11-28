@@ -101,8 +101,8 @@ _setTrips(List<Trip> trips, BuildContext context) {
       .map((trip) => ListTile(
             leading: Icon(Icons.star),
             title: Text(trip.name),
-            onLongPress: () async {
-              print('longpress');
+            subtitle: Text(trip.id),
+            onTap: () async {
               await AddUpdateTripModel().selectedTrip(trip);
               Navigator.pop(context);
             },

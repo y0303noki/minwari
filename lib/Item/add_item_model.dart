@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trip_money_local/domain/db_table/item.dart';
+import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 
 class AddUpdateItemModel extends ChangeNotifier {
   String title = '';
   int money = 0;
   List<Item> items;
+  Trip selectedTrip;
 
   Future addItem(item) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -40,11 +42,14 @@ class AddUpdateItemModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getItems(tripId) async {
+  Future getItems() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // ストレージからtripidを探す
     String selectedTripId = await AddUpdateTripModel().getSelectedTripId();
-    tripId = selectedTripId;
+    final tripId = selectedTripId;
+
+    List<Trip> trips = await AddUpdateTripModel().getTrips();
+    this.selectedTrip = trips.firstWhere((trip) => trip.id == tripId);
 
     final key = 'items_$tripId';
     final itemsData = prefs.getString(key);
