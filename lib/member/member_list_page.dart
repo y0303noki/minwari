@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trip_money_local/Item/add_item_page.dart';
-import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
-import 'package:trip_money_local/header/header.dart';
 import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/add_member_page.dart';
@@ -15,14 +12,13 @@ class MemberListPage extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateMemberModel>(
-        create: (_) => AddUpdateMemberModel()
-          ..getMembers(-3).then((value) => listTiles = _setMembers(value)),
+        create: (_) => AddUpdateMemberModel()..getMembers(),
         child: Consumer<AddUpdateMemberModel>(
             builder: (consumerContext, model, child) {
           print('member_list_page Consumer');
           if (model.members == null) {
           } else {
-            listTiles = _setMembers(model.members);
+            listTiles = _setMembers(model.members, model);
           }
           return Scaffold(
             appBar: AppBar(
@@ -57,8 +53,8 @@ class MemberListPage extends StatelessWidget {
                     IconButton(
                         icon: Icon(Icons.update),
                         onPressed: () async {
-                          final test = await model.getMembers(-3);
-                          listTiles = _setMembers(test);
+                          final test = await model.getMembers();
+                          listTiles = _setMembers(test, model);
                         }),
                     IconButton(
                         icon: Icon(Icons.delete),
@@ -85,7 +81,7 @@ class MemberListPage extends StatelessWidget {
                 ).then((value) {
                   // ここで画面遷移から戻ってきたことを検知できる
                   print('モドてきたメンバ');
-                  model.getMembers(-3);
+                  model.getMembers();
                 });
               },
               child: Icon(Icons.person_add),
@@ -98,12 +94,51 @@ class MemberListPage extends StatelessWidget {
   }
 }
 
-_setMembers(List<Member> members) {
+//_setMembers(List<Member> members) {
+//  if (members == null) {
+//    return [];
+//  }
+//  final listMembers = members
+//      .map((member) => ListTile(
+//            leading: Icon(Icons.person),
+//            title: Text(member.name),
+//          ))
+//      .toList();
+//  return listMembers;
+//}
+
+List<Widget> _setMembers(List<Member> members, AddUpdateMemberModel model) {
+  if (members == null) {
+    return [];
+  }
   final listMembers = members
-      .map((member) => ListTile(
-            leading: Icon(Icons.person),
+      .map(
+        // 左右スワイプで消せるように
+        (member) => Dismissible(
+          key: Key(member.id),
+          onDismissed: (direction) {
+            // スワイプ方向がendToStart（画面左から右）の場合の処理
+            if (direction == DismissDirection.endToStart) {
+              print(1);
+              model.deleteMember(member);
+              // スワイプ方向がstartToEnd（画面右から左）の場合の処理
+            } else {
+              print(2);
+            }
+          },
+          // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
+          background: Container(color: Colors.blue),
+
+          // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
+          secondaryBackground: Container(color: Colors.red),
+
+          child: ListTile(
+            leading: Icon(Icons.map),
             title: Text(member.name),
-          ))
+            subtitle: Text(member.tripId),
+          ),
+        ),
+      )
       .toList();
   return listMembers;
 }

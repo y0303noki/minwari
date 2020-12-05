@@ -6,6 +6,7 @@ import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/header/header.dart';
 import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
+import 'package:uuid/uuid.dart';
 
 import 'member_list_page.dart';
 
@@ -87,8 +88,8 @@ Future addMember(AddUpdateMemberModel model, BuildContext context) async {
   try {
     final String now = DateTime.now().toString();
     final Member newMember = Member(
-        id: -1,
-        tripId: -3,
+        id: Uuid().v1(),
+        tripId: '',
         name: model.name,
         memo: model.memo,
         createdAt: now,

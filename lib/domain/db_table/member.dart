@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 class Member {
-  final int id;
-  final int tripId;
+  String id;
+  String tripId;
   final String name;
   final String memo;
   final String createdAt;
