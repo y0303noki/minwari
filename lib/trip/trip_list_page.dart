@@ -13,13 +13,14 @@ class TripListPage extends StatelessWidget {
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateTripModel>(
         create: (_) => AddUpdateTripModel()
-          ..getTrips().then((value) => listTiles = _setTrips(value, context)),
+          ..getTrips().then((value) =>
+              listTiles = _setTrips(value, context, AddUpdateTripModel())),
         child: Consumer<AddUpdateTripModel>(
             builder: (consumerContext, model, child) {
           print('trip_list_page Consumer');
           if (model.trips == null) {
           } else {
-            listTiles = _setTrips(model.trips, context);
+            listTiles = _setTrips(model.trips, context, model);
           }
           return Scaffold(
             appBar: AppBar(
@@ -55,7 +56,7 @@ class TripListPage extends StatelessWidget {
                         icon: Icon(Icons.update),
                         onPressed: () async {
                           final test = await model.getTrips();
-                          listTiles = _setTrips(test, context);
+                          listTiles = _setTrips(test, context, model);
                         }),
                     IconButton(
                         icon: Icon(Icons.delete),
@@ -96,17 +97,39 @@ class TripListPage extends StatelessWidget {
   }
 }
 
-_setTrips(List<Trip> trips, BuildContext context) {
+_setTrips(List<Trip> trips, BuildContext context, AddUpdateTripModel model) {
+  if (trips == null) {
+    return [];
+  }
+
   final listTrips = trips
-      .map((trip) => ListTile(
-            leading: Icon(Icons.star),
-            title: Text(trip.name),
-            subtitle: Text(trip.id),
-            onTap: () async {
-              await AddUpdateTripModel().selectedTrip(trip);
-              Navigator.pop(context);
+      .map(
+        (trip) => Dismissible(
+            key: Key(trip.id),
+            onDismissed: (direction) {
+              // スワイプ方向がendToStart（画面左から右）の場合の処理
+              if (direction == DismissDirection.endToStart) {
+                model.deleteTrip(trip);
+                // スワイプ方向がstartToEnd（画面右から左）の場合の処理
+              } else {
+                print(2);
+              }
             },
-          ))
+            // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
+            background: Container(color: Colors.blue),
+
+            // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
+            secondaryBackground: Container(color: Colors.red),
+            child: ListTile(
+              leading: Icon(Icons.star),
+              title: Text(trip.name),
+              subtitle: Text(trip.id),
+              onTap: () async {
+                await AddUpdateTripModel().selectedTrip(trip);
+                Navigator.pop(context);
+              },
+            )),
+      )
       .toList();
   return listTrips;
 }

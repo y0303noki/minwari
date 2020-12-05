@@ -93,4 +93,23 @@ class AddUpdateTripModel extends ChangeNotifier {
     prefs.setString(selectedTripId, selectedId);
     notifyListeners();
   }
+
+  Future deleteTrip(Trip deleteTrip) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'trips';
+
+    final tripsData = prefs.getString(key);
+    if (tripsData == null) {
+      return null;
+    }
+
+    // stringからList<Trip>にデコード
+    List<Trip> tripsDecoded = Trip.decodeTrips(tripsData);
+    tripsDecoded.removeWhere((trip) => trip.id == deleteTrip.id);
+
+    final tripsEncoded = Trip.encodeTrips(tripsDecoded);
+    prefs.setString(key, tripsEncoded);
+    // itemsを最新にしないと怒られる
+    await getTrips();
+  }
 }
