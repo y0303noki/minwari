@@ -214,6 +214,7 @@ List<Widget> _setItems(
       child: ListTile(
         title: Text(item.title),
         subtitle: Text(member != null ? member.name : 'nullだよ'),
+        trailing: Text('${item.money.toString()}円'),
       ),
     ));
   }

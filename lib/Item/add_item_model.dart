@@ -18,6 +18,15 @@ class AddUpdateItemModel extends ChangeNotifier {
   Trip selectedTrip;
 
   Future addItem(Item item) async {
+    if (item.title == null || item.title.length <= 0) {
+      throw ('タイトルを入力してください。');
+    }
+    if (item.money == null || item.money <= 0) {
+      throw ('金額を入力してください。');
+    }
+    if (item.memberId == null) {
+      throw ('メンバーを選択してください。');
+    }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final tripId = await AddUpdateTripModel().getSelectedTripId();
     item.tripId = tripId;
