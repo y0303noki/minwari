@@ -15,6 +15,7 @@ enum Answers { OK, CANCEL }
 class AddMemberPage extends StatelessWidget {
 //  List<Widget> listTiles = [];
   final memberNameEditingController = TextEditingController();
+  final colorNameEditingController = TextEditingController();
   final memberMemoEditingController = TextEditingController();
 
   @override
@@ -62,6 +63,18 @@ class AddMemberPage extends StatelessWidget {
                     ),
                     controller: memberNameEditingController,
                   ),
+                  // メンバーごとに色つけたい
+//                  TextField(
+//                    readOnly: true,
+//                    decoration: InputDecoration(
+//                      labelText: '色',
+//                    ),
+//                    controller: colorNameEditingController,
+//                    onTap: () async {
+//                      final tes = await _askedToLead(context);
+//                      print(tes);
+//                    },
+//                  ),
                   TextField(
                     decoration: InputDecoration(labelText: 'メモとか'),
                     controller: memberMemoEditingController,
@@ -129,5 +142,143 @@ Future addMember(AddUpdateMemberModel model, BuildContext context) async {
         );
       },
     );
+  }
+}
+
+enum COLOR { BLUE, RED, PINK, ORANGE, YELLOW, PURPLE, BLACK, GREY }
+
+//void openDialog(BuildContext context) {
+//  List<SimpleDialogOption> test = [];
+//  for (var color in COLOR.values) {
+//    var aaa;
+//    switch (color) {
+//      case COLOR.BLUE:
+//        aaa = Colors.blue;
+//        break;
+//      case COLOR.RED:
+//        aaa = Colors.red;
+//        break;
+//      case COLOR.PINK:
+//        aaa = Colors.pink;
+//        break;
+//      case COLOR.ORANGE:
+//        aaa = Colors.orange;
+//        break;
+//      case COLOR.YELLOW:
+//        aaa = Colors.yellow;
+//        break;
+//      case COLOR.PURPLE:
+//        aaa = Colors.purple;
+//        break;
+//      case COLOR.BLACK:
+//        aaa = Colors.black;
+//        break;
+//      case COLOR.GREY:
+//        aaa = Colors.grey;
+//        break;
+//      default:
+//        aaa = Colors.grey;
+//        break;
+//    }
+//    var dialog = SimpleDialogOption(
+//      child: Icon(
+//        Icons.circle,
+//        color: aaa,
+//      ),
+//      onPressed: () {
+////            Navigator.pop(context, 'OK');
+//        print(aaa);
+//      },
+//    );
+//    test.add(dialog);
+//  }
+//  showDialog<COLOR>(
+//    context: context,
+//    builder: (BuildContext context) => AlertDialog(
+//      title: Text('色を選んでください'),
+//      actions: test,
+//    ),
+//  ).then((value) async {
+//    switch (value) {
+//      case COLOR.BLUE:
+//        break;
+//      case COLOR.RED:
+//        break;
+//    }
+//  });
+//}
+//
+//createDialogOption(BuildContext context, Answers answer, String str) {
+//  return new SimpleDialogOption(
+//    child: new Text(str),
+//    onPressed: () {
+//      Navigator.pop(context, answer);
+//    },
+//  );
+//}
+
+Future<String> _askedToLead(BuildContext context) async {
+  List<SimpleDialogOption> test = [];
+  for (var color in COLOR.values) {
+    var aaa;
+    switch (color) {
+      case COLOR.BLUE:
+        aaa = Colors.blue;
+        break;
+      case COLOR.RED:
+        aaa = Colors.red;
+        break;
+      case COLOR.PINK:
+        aaa = Colors.pink;
+        break;
+      case COLOR.ORANGE:
+        aaa = Colors.orange;
+        break;
+      case COLOR.YELLOW:
+        aaa = Colors.yellow;
+        break;
+      case COLOR.PURPLE:
+        aaa = Colors.purple;
+        break;
+      case COLOR.BLACK:
+        aaa = Colors.black;
+        break;
+      case COLOR.GREY:
+        aaa = Colors.grey;
+        break;
+      default:
+        aaa = Colors.grey;
+        break;
+    }
+    var dialog = SimpleDialogOption(
+      child: Icon(
+        Icons.crop_square_rounded,
+        color: aaa,
+      ),
+      onPressed: () {
+//            Navigator.pop(context, 'OK');
+        Navigator.pop(context, aaa.toString());
+      },
+    );
+    test.add(dialog);
+  }
+
+  switch (await showDialog<COLOR>(
+      context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: SimpleDialog(
+            title: const Text('Select assignment'),
+            children: test,
+          ),
+        );
+      })) {
+    case COLOR.BLUE:
+      // Let's go.
+      // ...
+      break;
+    case COLOR.RED:
+      // ...
+      break;
   }
 }

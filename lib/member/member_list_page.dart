@@ -133,7 +133,7 @@ List<Widget> _setMembers(List<Member> members, AddUpdateMemberModel model) {
           secondaryBackground: Container(color: Colors.red),
 
           child: ListTile(
-            leading: Icon(Icons.map),
+            leading: Icon(Icons.person),
             title: Text(member.name),
             subtitle: Text(member.tripId),
           ),

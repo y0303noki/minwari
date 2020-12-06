@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 class Member {
   String id;
   String tripId;
   final String name;
   final String memo;
+  String color;
   final String createdAt;
   final String updatedAt;
 
@@ -13,6 +16,7 @@ class Member {
       this.tripId,
       this.name,
       this.memo,
+      this.color,
       this.createdAt,
       this.updatedAt});
 
@@ -22,6 +26,7 @@ class Member {
       tripId: jsonData['tripId'],
       name: jsonData['name'],
       memo: jsonData['memo'],
+      color: jsonData['color'],
       createdAt: jsonData['createdAt'],
       updatedAt: jsonData['updatedAt'],
     );
@@ -32,6 +37,7 @@ class Member {
         'tripId': member.tripId,
         'name': member.name,
         'memo': member.memo,
+        'color': member.color,
         'createdAt': member.createdAt,
         'updatedAt': member.updatedAt,
       };

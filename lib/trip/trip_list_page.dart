@@ -121,9 +121,9 @@ _setTrips(List<Trip> trips, BuildContext context, AddUpdateTripModel model) {
             // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
             secondaryBackground: Container(color: Colors.red),
             child: ListTile(
-              leading: Icon(Icons.star),
+              leading: Icon(Icons.event),
               title: Text(trip.name),
-              subtitle: Text(trip.id),
+              subtitle: Text(''),
               onTap: () async {
                 await AddUpdateTripModel().selectedTrip(trip);
                 Navigator.pop(context);

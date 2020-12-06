@@ -154,38 +154,69 @@ List<Widget> _setItems(
     return [];
   }
 
-  final listItems = items
-      .map(
-        // 左右スワイプで消せるように
-        (item) => Dismissible(
-          key: Key(item.id),
-          onDismissed: (direction) async {
-            // スワイプ方向がendToStart（画面左から右）の場合の処理
-            if (direction == DismissDirection.endToStart) {
-              print(1);
-              model.deleteItem(item);
-              // スワイプ方向がstartToEnd（画面右から左）の場合の処理
-            } else {
-              print(2);
-            }
-          },
-          // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
-          background: Container(color: Colors.blue),
+//  final listItems = items
+//      .map(
+//        // 左右スワイプで消せるように
+//        (item) => Dismissible(
+//          key: Key(item.id),
+//          onDismissed: (direction) async {
+//            // スワイプ方向がendToStart（画面左から右）の場合の処理
+//            if (direction == DismissDirection.endToStart) {
+//              print(1);
+//              model.deleteItem(item);
+//              // スワイプ方向がstartToEnd（画面右から左）の場合の処理
+//            } else {
+//              print(2);
+//            }
+//          },
+//          // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
+//          background: Container(color: Colors.blue),
+//
+//          // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
+//          secondaryBackground: Container(color: Colors.red),
+//
+//          child: ListTile(
+//            leading: Icon(Icons.map),
+//            title: Text(item.title),
+//            subtitle: Text(members.firstWhere((m) => m.id == item.memberId,
+//                        orElse: () => null) !=
+//                    null
+//                ? members.firstWhere((m) => m.id == item.memberId).name
+//                : 'メンバーがいないよ'),
+//          ),
+//        ),
+//      )
+//      .toList();
 
-          // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
-          secondaryBackground: Container(color: Colors.red),
+  List<Widget> listItems = [];
 
-          child: ListTile(
-            leading: Icon(Icons.map),
-            title: Text(item.title),
-            subtitle: Text(members.firstWhere((m) => m.id == item.memberId,
-                        orElse: () => null) !=
-                    null
-                ? members.firstWhere((m) => m.id == item.memberId).name
-                : 'メンバーがいないよ'),
-          ),
-        ),
-      )
-      .toList();
+  for (var item in items) {
+    Member member =
+        members.firstWhere((m) => m.id == item.memberId, orElse: () => null);
+    listItems.add(Dismissible(
+      key: Key(item.id),
+      onDismissed: (direction) async {
+        // スワイプ方向がendToStart（画面左から右）の場合の処理
+        if (direction == DismissDirection.endToStart) {
+          print(1);
+          model.deleteItem(item);
+          // スワイプ方向がstartToEnd（画面右から左）の場合の処理
+        } else {
+          print(2);
+        }
+      },
+      // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
+      background: Container(color: Colors.blue),
+
+      // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
+      secondaryBackground: Container(color: Colors.red),
+
+      child: ListTile(
+        title: Text(item.title),
+        subtitle: Text(member != null ? member.name : 'nullだよ'),
+      ),
+    ));
+  }
+
   return listItems;
 }
