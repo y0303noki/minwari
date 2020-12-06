@@ -50,6 +50,36 @@ class AddUpdateMemberModel extends ChangeNotifier {
     return membersDecoded;
   }
 
+  Future getMembersNoNotify() async {
+    String tripId = await AddUpdateTripModel().getSelectedTripId();
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'members_$tripId';
+    final membersData = prefs.getString(key);
+    if (membersData == null) {
+      return null;
+    }
+
+    // stringからList<Member>にデコード
+    List<Member> membersDecoded = Member.decodeMembers(membersData);
+    return membersDecoded;
+  }
+
+  Future<Member> getMemberByMemberId(String memberId) async {
+    String tripId = await AddUpdateTripModel().getSelectedTripId();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'members_$tripId';
+    final membersData = prefs.getString(key);
+    if (membersData == null) {
+      return null;
+    }
+
+    // stringからList<Member>にデコード
+    List<Member> membersDecoded = Member.decodeMembers(membersData);
+    Member member = membersDecoded.firstWhere((m) => m.id == memberId);
+    return member;
+  }
+
   Future deleteAllMember(tripId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'members_$tripId';

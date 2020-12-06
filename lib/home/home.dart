@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:trip_money_local/Item/add_item_model.dart';
 import 'package:trip_money_local/Item/add_item_page.dart';
 import 'package:trip_money_local/domain/db_table/item.dart';
+import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/header/header.dart';
+import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/member_list_page.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';
 
@@ -24,7 +26,7 @@ class HomePage extends StatelessWidget {
           if (model.items == null) {
             listTiles = [];
           } else {
-            listTiles = _setItems(model.items, model);
+            listTiles = _setItems(model.items, model.members, model);
           }
 
           if (model.selectedTrip == null) {
@@ -83,7 +85,7 @@ class HomePage extends StatelessWidget {
                             return;
                           }
 
-                          listTiles = _setItems(items, model);
+                          listTiles = _setItems(items, model.members, model);
                         }),
                     // メンバー管理ボタン
                     IconButton(
@@ -107,11 +109,13 @@ class HomePage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
+                List<Member> members =
+                    await AddUpdateMemberModel().getMembers();
                 // アイテム追加ダイアログ呼び出し
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddItemPage(),
+                      builder: (context) => AddItemPage(members),
                       fullscreenDialog: true),
                 ).then((value) {
                   // ここで画面遷移から戻ってきたことを検知できる
@@ -140,16 +144,22 @@ const List<Widget> listTiles = const [
   ),
 ];
 
-List<Widget> _setItems(List<Item> items, AddUpdateItemModel model) {
+List<Widget> _setItems(
+    List<Item> items, List<Member> members, AddUpdateItemModel model) {
   if (items == null) {
     return [];
   }
+
+  if (members == null) {
+    return [];
+  }
+
   final listItems = items
       .map(
         // 左右スワイプで消せるように
         (item) => Dismissible(
           key: Key(item.id),
-          onDismissed: (direction) {
+          onDismissed: (direction) async {
             // スワイプ方向がendToStart（画面左から右）の場合の処理
             if (direction == DismissDirection.endToStart) {
               print(1);
@@ -168,7 +178,11 @@ List<Widget> _setItems(List<Item> items, AddUpdateItemModel model) {
           child: ListTile(
             leading: Icon(Icons.map),
             title: Text(item.title),
-            subtitle: Text(item.tripId),
+            subtitle: Text(members.firstWhere((m) => m.id == item.memberId,
+                        orElse: () => null) !=
+                    null
+                ? members.firstWhere((m) => m.id == item.memberId).name
+                : 'メンバーがいないよ'),
           ),
         ),
       )

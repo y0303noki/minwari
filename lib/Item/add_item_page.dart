@@ -1,23 +1,26 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trip_money_local/Item/add_item_model.dart';
 import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
-import 'package:trip_money_local/header/header.dart';
 import 'package:trip_money_local/home/home.dart';
-import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:uuid/uuid.dart';
 
 enum Answers { OK, CANCEL }
 
 class AddItemPage extends StatelessWidget {
+  AddItemPage(this.members);
+  final List<Member> members;
 //  List<Widget> listTiles = [];
-  final itemNameEditingController = TextEditingController();
-  final personEditingController = TextEditingController();
-  final itemMoneyEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final itemNameEditingController = TextEditingController();
+    Member defaultMember = members.first;
+    final personEditingController =
+        TextEditingController(text: defaultMember.name);
+    final itemMoneyEditingController = TextEditingController();
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateItemModel>(
@@ -68,8 +71,8 @@ class AddItemPage extends StatelessWidget {
                     ),
                     controller: personEditingController,
                     onTap: () {
-//                          _showModalPicker(context, personEditingController,
-//                              members, selectTrip);
+                      _showModalPicker(
+                          context, personEditingController, this.members);
                     },
                   ),
                   TextField(
@@ -81,7 +84,10 @@ class AddItemPage extends StatelessWidget {
                     child: Text('追加する'),
                     onPressed: () async {
                       model.title = itemNameEditingController.text;
-//                      model.memberName = personEditingController.text;
+//                      model.member = personEditingController.text;
+                      Member selectedMember = this.members.firstWhere(
+                          (m) => m.name == personEditingController.text);
+                      model.memberId = selectedMember.id;
                       model.money =
                           int.tryParse(itemMoneyEditingController.text);
                       await addItem(model, context);
@@ -105,6 +111,7 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
         tripId: '',
         title: model.title,
         money: model.money,
+        memberId: model.memberId,
         createdAt: now,
         updatedAt: now);
     await model.addItem(newItem);
@@ -143,4 +150,37 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
       },
     );
   }
+}
+
+// ピッカーからメンバーを選択する
+_showModalPicker(BuildContext context, TextEditingController textController,
+    List<Member> members) {
+  showModalBottomSheet<void>(
+    context: context,
+    builder: (BuildContext context) {
+      List<String> memberNameList = members.map((m) => m.name).toList();
+      return Container(
+        height: MediaQuery.of(context).size.height / 2,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context, 'picker');
+          },
+          child: CupertinoPicker(
+            itemExtent: 40,
+            children: memberNameList.map(_pickerItem).toList(),
+            onSelectedItemChanged: (value) {
+              textController.text = memberNameList[value].toString();
+            },
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget _pickerItem(String str) {
+  return Text(
+    str,
+    style: const TextStyle(fontSize: 32),
+  );
 }

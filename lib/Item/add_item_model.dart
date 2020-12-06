@@ -3,17 +3,21 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trip_money_local/domain/db_table/item.dart';
+import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
+import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 import 'package:uuid/uuid.dart';
 
 class AddUpdateItemModel extends ChangeNotifier {
   String title = '';
   int money = 0;
+  String memberId;
   List<Item> items = [];
+  List<Member> members;
   Trip selectedTrip;
 
-  Future addItem(item) async {
+  Future addItem(Item item) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final tripId = await AddUpdateTripModel().getSelectedTripId();
     item.tripId = tripId;
@@ -24,12 +28,14 @@ class AddUpdateItemModel extends ChangeNotifier {
     if (itemsData == null) {
       final String now = DateTime.now().toString();
       final uuid = Uuid().v1();
+      String testMemberId = Uuid().v1();
       print('uuid:$uuid');
       Item tesItem = Item(
           id: uuid,
           tripId: tripId,
           title: 'test',
           money: 0,
+          memberId: testMemberId,
           createdAt: now,
           updatedAt: now);
       List<Item> testItems = [tesItem];
@@ -68,6 +74,8 @@ class AddUpdateItemModel extends ChangeNotifier {
 //    itemsDecoded.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
     this.items = itemsDecoded;
+
+    this.members = await AddUpdateMemberModel().getMembersNoNotify();
     notifyListeners();
     return itemsDecoded;
   }

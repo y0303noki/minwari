@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'member.dart';
+
 class Item {
   final String id;
   String tripId;
   final String title;
   final int money;
+  String memberId;
   final String createdAt;
   final String updatedAt;
 
@@ -13,6 +16,7 @@ class Item {
       this.tripId,
       this.title,
       this.money,
+      this.memberId,
       this.createdAt,
       this.updatedAt});
 
@@ -22,6 +26,7 @@ class Item {
       tripId: jsonData['tripId'],
       title: jsonData['title'],
       money: jsonData['money'],
+      memberId: jsonData['memberId'],
       createdAt: jsonData['createdAt'],
       updatedAt: jsonData['updatedAt'],
     );
@@ -32,6 +37,7 @@ class Item {
         'tripId': item.tripId,
         'title': item.title,
         'money': item.money,
+        'memberId': item.memberId,
         'createdAt': item.createdAt,
         'updatedAt': item.updatedAt,
       };
