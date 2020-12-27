@@ -13,6 +13,7 @@ class AddUpdateItemModel extends ChangeNotifier {
   String title = '';
   int money = 0;
   String memberId;
+  String memo;
   List<Item> items = [];
   List<Member> members;
   Trip selectedTrip;
@@ -45,6 +46,7 @@ class AddUpdateItemModel extends ChangeNotifier {
           title: 'test',
           money: 0,
           memberId: testMemberId,
+          memo: '',
           createdAt: now,
           updatedAt: now);
       List<Item> testItems = [tesItem];
@@ -56,6 +58,32 @@ class AddUpdateItemModel extends ChangeNotifier {
 
     // ローカルストレージに保存するためにエンコード
     final itemsEncoded = Item.encodeItems(itemsDecoded);
+    prefs.setString(key, itemsEncoded);
+    notifyListeners();
+  }
+
+  Future updateItem(Item updateItem) async {
+    if (updateItem.title == null || updateItem.title.length <= 0) {
+      throw ('タイトルを入力してください。');
+    }
+    if (updateItem.money == null || updateItem.money <= 0) {
+      throw ('金額を入力してください。');
+    }
+    if (updateItem.memberId == null) {
+      throw ('メンバーを選択してください。');
+    }
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final tripId = await AddUpdateTripModel().getSelectedTripId();
+    updateItem.tripId = tripId;
+
+    List<Item> items = await getItems2(tripId);
+
+    items.removeWhere((item) => item.id == updateItem.id);
+    items.add(updateItem);
+
+    // ローカルストレージに保存するためにエンコード
+    final itemsEncoded = Item.encodeItems(items);
+    final key = 'items_$tripId';
     prefs.setString(key, itemsEncoded);
     notifyListeners();
   }

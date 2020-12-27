@@ -10,8 +10,9 @@ import 'package:uuid/uuid.dart';
 enum Answers { OK, CANCEL }
 
 class AddItemPage extends StatelessWidget {
-  AddItemPage(this.members);
+  AddItemPage(this.members, this.item);
   final List<Member> members;
+  final Item item;
 //  List<Widget> listTiles = [];
 
   @override
@@ -21,6 +22,21 @@ class AddItemPage extends StatelessWidget {
     final personEditingController =
         TextEditingController(text: defaultMember.name);
     final itemMoneyEditingController = TextEditingController();
+    final itemMemoEditingController = TextEditingController();
+
+    final isUpdate = item != null;
+    // 更新なら更新前のデータを反映させる
+    if (isUpdate) {
+      itemNameEditingController.text = item.title;
+      itemMoneyEditingController.text = item.money.toString();
+      itemMemoEditingController.text = item.memo;
+
+      defaultMember =
+          members.firstWhere((member) => member.id == item.memberId);
+      if (defaultMember != null) {
+        personEditingController.text = defaultMember.name;
+      }
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateItemModel>(
@@ -56,7 +72,7 @@ class AddItemPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text('アイテム追加'),
+                  Text(!isUpdate ? 'アイテムを追加' : 'アイテムを編集'),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
@@ -80,8 +96,12 @@ class AddItemPage extends StatelessWidget {
                     controller: itemMoneyEditingController,
                     keyboardType: TextInputType.number,
                   ),
+                  TextField(
+                    decoration: InputDecoration(labelText: 'メモ'),
+                    controller: itemMemoEditingController,
+                  ),
                   RaisedButton(
-                    child: Text('追加する'),
+                    child: Text(!isUpdate ? '追加する' : '編集する'),
                     onPressed: () async {
                       model.title = itemNameEditingController.text;
 //                      model.member = personEditingController.text;
@@ -90,7 +110,12 @@ class AddItemPage extends StatelessWidget {
                       model.memberId = selectedMember.id;
                       model.money =
                           int.tryParse(itemMoneyEditingController.text);
-                      await addItem(model, context);
+                      model.memo = itemMemoEditingController.text;
+                      if (isUpdate) {
+                        await upDateItem(model, context, item);
+                      } else {
+                        await addItem(model, context);
+                      }
                     },
                   ),
                 ],
@@ -103,6 +128,7 @@ class AddItemPage extends StatelessWidget {
   }
 }
 
+// 新規追加
 Future addItem(AddUpdateItemModel model, BuildContext context) async {
   try {
     final String now = DateTime.now().toString();
@@ -112,9 +138,58 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
         title: model.title,
         money: model.money,
         memberId: model.memberId,
+        memo: model.memo,
         createdAt: now,
         updatedAt: now);
     await model.addItem(newItem);
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('保存しました。'),
+          actions: [
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    Navigator.of(context).pop();
+  } catch (e) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(e.toString()),
+          actions: [
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// 更新
+Future upDateItem(
+    AddUpdateItemModel model, BuildContext context, Item updateItem) async {
+  try {
+    final String now = DateTime.now().toString();
+    updateItem.title = model.title;
+    updateItem.memberId = model.memberId;
+    updateItem.money = model.money;
+    updateItem.updatedAt = now;
+    updateItem.memo = model.memo;
+    await model.updateItem(updateItem);
     await showDialog(
       context: context,
       builder: (BuildContext context) {

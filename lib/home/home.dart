@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
           if (model.items == null) {
             listTiles = [];
           } else {
-            listTiles = _setItems(model.items, model.members, model);
+            listTiles = _setItems(model.items, model.members, model, context);
           }
 
           if (model.selectedTrip == null) {
@@ -85,7 +85,8 @@ class HomePage extends StatelessWidget {
                             return;
                           }
 
-                          listTiles = _setItems(items, model.members, model);
+                          listTiles =
+                              _setItems(items, model.members, model, context);
                         }),
                     // メンバー管理ボタン
                     IconButton(
@@ -99,6 +100,21 @@ class HomePage extends StatelessWidget {
                           );
                         }),
                   ],
+                ),
+                RaisedButton(
+                  child: const Text('精算'),
+                  color: Colors.white,
+                  shape: const StadiumBorder(
+                    side: BorderSide(color: Colors.green),
+                  ),
+                  onPressed: () async {},
+                ),
+                const Divider(
+                  color: Colors.green,
+                  height: 20,
+                  thickness: 5,
+                  indent: 20,
+                  endIndent: 0,
                 ),
                 Expanded(
                   child: ListView(
@@ -115,7 +131,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddItemPage(members),
+                      builder: (context) => AddItemPage(members, null),
                       fullscreenDialog: true),
                 ).then((value) {
                   // ここで画面遷移から戻ってきたことを検知できる
@@ -144,8 +160,8 @@ const List<Widget> listTiles = const [
   ),
 ];
 
-List<Widget> _setItems(
-    List<Item> items, List<Member> members, AddUpdateItemModel model) {
+List<Widget> _setItems(List<Item> items, List<Member> members,
+    AddUpdateItemModel model, BuildContext context) {
   if (items == null) {
     return [];
   }
@@ -215,6 +231,20 @@ List<Widget> _setItems(
         title: Text(item.title),
         subtitle: Text(member != null ? member.name : 'nullだよ'),
         trailing: Text('${item.money.toString()}円'),
+        onTap: () async {
+          List<Member> members = await AddUpdateMemberModel().getMembers();
+          // アイテム追加ダイアログ呼び出し
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddItemPage(members, item),
+                fullscreenDialog: true),
+          ).then((value) {
+            // ここで画面遷移から戻ってきたことを検知できる
+            print('モドてきた');
+            model.getItems();
+          });
+        },
       ),
     ));
   }
