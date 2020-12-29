@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trip_money_local/Item/switch_button_service.dart';
 import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
+import 'package:trip_money_local/domain/db_table/switchType.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
@@ -47,6 +49,7 @@ class AddUpdateItemModel extends ChangeNotifier {
           money: 0,
           memberId: testMemberId,
           memo: '',
+          isPaid: false,
           createdAt: now,
           updatedAt: now);
       List<Item> testItems = [tesItem];
@@ -88,7 +91,7 @@ class AddUpdateItemModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getItems() async {
+  Future getItems(String switchType) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // ストレージからtripidを探す
     String selectedTripId = await AddUpdateTripModel().getSelectedTripId();
@@ -109,6 +112,16 @@ class AddUpdateItemModel extends ChangeNotifier {
     List<Item> itemsDecoded = Item.decodeItems(itemsData);
     // 更新日が最新順にソート
 //    itemsDecoded.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    if (switchType == SwitchType.All) {
+      print('全部');
+    } else if (switchType == SwitchType.UN_PAID) {
+      itemsDecoded = itemsDecoded.where((item) => !item.isPaid).toList();
+    } else if (switchType == SwitchType.PAID) {
+      itemsDecoded = itemsDecoded.where((item) => item.isPaid).toList();
+    } else {
+      print('定義してない');
+    }
 
     this.items = itemsDecoded;
 
@@ -152,7 +165,32 @@ class AddUpdateItemModel extends ChangeNotifier {
     items.removeWhere((item) => item.id == deleteItem.id);
     final itemsEncoded = Item.encodeItems(items);
     prefs.setString(key, itemsEncoded);
+    String type = await SwitchButtonService().getSwitchType();
+
     // itemsを最新にしないと怒られる
-    await getItems();
+    await getItems(type);
+  }
+
+  Future updateIsPayItem(Item paidItem) async {
+    String selectedTripId = await AddUpdateTripModel().getSelectedTripId();
+    final key = 'items_$selectedTripId';
+
+    String type = await SwitchButtonService().getSwitchType();
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Item> items = await getItems2(selectedTripId);
+
+    items.removeWhere((item) => item.id == paidItem.id);
+    if (type == SwitchType.UN_PAID) {
+      paidItem.isPaid = true;
+    } else if (type == SwitchType.PAID) {
+      paidItem.isPaid = false;
+    }
+
+    items.add(paidItem);
+    final itemsEncoded = Item.encodeItems(items);
+    prefs.setString(key, itemsEncoded);
+    // itemsを最新にしないと怒られる
+    await getItems(type);
   }
 }

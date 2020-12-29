@@ -7,6 +7,7 @@ class Item {
   int money;
   String memberId;
   String memo;
+  bool isPaid;
   final String createdAt;
   String updatedAt;
 
@@ -17,6 +18,7 @@ class Item {
       this.money,
       this.memberId,
       this.memo,
+      this.isPaid,
       this.createdAt,
       this.updatedAt});
 
@@ -28,6 +30,7 @@ class Item {
       money: jsonData['money'],
       memberId: jsonData['memberId'],
       memo: jsonData['memo'],
+      isPaid: jsonData['isPaid'],
       createdAt: jsonData['createdAt'],
       updatedAt: jsonData['updatedAt'],
     );
@@ -40,6 +43,7 @@ class Item {
         'money': item.money,
         'memberId': item.memberId,
         'memo': item.memo,
+        'isPaid': item.isPaid,
         'createdAt': item.createdAt,
         'updatedAt': item.updatedAt,
       };

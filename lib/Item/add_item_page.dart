@@ -97,6 +97,8 @@ class AddItemPage extends StatelessWidget {
                     keyboardType: TextInputType.number,
                   ),
                   TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     decoration: InputDecoration(labelText: 'メモ'),
                     controller: itemMemoEditingController,
                   ),
@@ -139,6 +141,7 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
         money: model.money,
         memberId: model.memberId,
         memo: model.memo,
+        isPaid: false,
         createdAt: now,
         updatedAt: now);
     await model.addItem(newItem);
