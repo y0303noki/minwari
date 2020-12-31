@@ -18,7 +18,7 @@ class MemberListPage extends StatelessWidget {
           print('member_list_page Consumer');
           if (model.members == null) {
           } else {
-            listTiles = _setMembers(model.members, model);
+            listTiles = _setMembers(model.members, model, context);
           }
           return Scaffold(
             appBar: AppBar(
@@ -54,7 +54,7 @@ class MemberListPage extends StatelessWidget {
                         icon: Icon(Icons.update),
                         onPressed: () async {
                           final test = await model.getMembers();
-                          listTiles = _setMembers(test, model);
+                          listTiles = _setMembers(test, model, context);
                         }),
                     IconButton(
                         icon: Icon(Icons.delete),
@@ -76,7 +76,7 @@ class MemberListPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddMemberPage(),
+                      builder: (context) => AddMemberPage(null),
                       fullscreenDialog: true),
                 ).then((value) {
                   // ここで画面遷移から戻ってきたことを検知できる
@@ -107,7 +107,8 @@ class MemberListPage extends StatelessWidget {
 //  return listMembers;
 //}
 
-List<Widget> _setMembers(List<Member> members, AddUpdateMemberModel model) {
+List<Widget> _setMembers(
+    List<Member> members, AddUpdateMemberModel model, BuildContext context) {
   if (members == null) {
     return [];
   }
@@ -116,6 +117,7 @@ List<Widget> _setMembers(List<Member> members, AddUpdateMemberModel model) {
         // 左右スワイプで消せるように
         (member) => Dismissible(
           key: Key(member.id),
+          direction: DismissDirection.endToStart,
           onDismissed: (direction) {
             // スワイプ方向がendToStart（画面左から右）の場合の処理
             if (direction == DismissDirection.endToStart) {
@@ -130,12 +132,30 @@ List<Widget> _setMembers(List<Member> members, AddUpdateMemberModel model) {
           background: Container(color: Colors.blue),
 
           // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
-          secondaryBackground: Container(color: Colors.red),
+          secondaryBackground: Container(
+            alignment: Alignment.centerRight,
+            color: Colors.red,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 0.0, 20.0, 0.0),
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+          ),
 
           child: ListTile(
             leading: Icon(Icons.person),
             title: Text(member.name),
-            subtitle: Text(member.tripId),
+            onLongPress: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddMemberPage(member),
+                    fullscreenDialog: true),
+              ).then((value) {
+                // ここで画面遷移から戻ってきたことを検知できる
+                print('モドてきたメンバ');
+                model.getMembers();
+              });
+            },
           ),
         ),
       )

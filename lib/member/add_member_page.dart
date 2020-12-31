@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trip_money_local/Item/add_item_model.dart';
-import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
-import 'package:trip_money_local/header/header.dart';
-import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,13 +9,20 @@ import 'member_list_page.dart';
 enum Answers { OK, CANCEL }
 
 class AddMemberPage extends StatelessWidget {
-//  List<Widget> listTiles = [];
+  AddMemberPage(this.member);
+  Member member;
   final memberNameEditingController = TextEditingController();
   final colorNameEditingController = TextEditingController();
   final memberMemoEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final isUpdate = member != null;
+    if (isUpdate) {
+      memberNameEditingController.text = member.name;
+      memberMemoEditingController.text = member.memo;
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateMemberModel>(
@@ -55,7 +58,7 @@ class AddMemberPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text('メンバー追加'),
+                  Text(isUpdate ? 'メンバーを編集' : 'メンバー追加'),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
@@ -80,11 +83,15 @@ class AddMemberPage extends StatelessWidget {
                     controller: memberMemoEditingController,
                   ),
                   RaisedButton(
-                    child: Text('追加する'),
+                    child: Text(isUpdate ? '編集する' : '追加する'),
                     onPressed: () async {
                       model.name = memberNameEditingController.text;
                       model.memo = memberMemoEditingController.text;
-                      await addMember(model, context);
+                      if (isUpdate) {
+                        await updateMember(model, context, member);
+                      } else {
+                        await addMember(model, context);
+                      }
                     },
                   ),
                 ],
@@ -108,11 +115,13 @@ Future addMember(AddUpdateMemberModel model, BuildContext context) async {
         createdAt: now,
         updatedAt: now);
     await model.addMember(newMember);
-    await showDialog(
+    Navigator.of(context).pop();
+  } catch (e) {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('保存しました。'),
+          title: Text(e.toString()),
           actions: [
             FlatButton(
               child: Text('OK'),
@@ -124,6 +133,17 @@ Future addMember(AddUpdateMemberModel model, BuildContext context) async {
         );
       },
     );
+  }
+}
+
+Future updateMember(AddUpdateMemberModel model, BuildContext context,
+    Member updateMember) async {
+  try {
+    final String now = DateTime.now().toString();
+    updateMember.name = model.name;
+    updateMember.memo = model.memo;
+    updateMember.updatedAt = now;
+    await model.updateMember(updateMember);
     Navigator.of(context).pop();
   } catch (e) {
     showDialog(

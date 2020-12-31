@@ -31,8 +31,8 @@ class AddItemPage extends StatelessWidget {
       itemMoneyEditingController.text = item.money.toString();
       itemMemoEditingController.text = item.memo;
 
-      defaultMember =
-          members.firstWhere((member) => member.id == item.memberId);
+      defaultMember = members.firstWhere((member) => member.id == item.memberId,
+          orElse: () => members.first);
       if (defaultMember != null) {
         personEditingController.text = defaultMember.name;
       }
@@ -145,22 +145,22 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
         createdAt: now,
         updatedAt: now);
     await model.addItem(newItem);
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('保存しました。'),
-          actions: [
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+//    await showDialog(
+//      context: context,
+//      builder: (BuildContext context) {
+//        return AlertDialog(
+//          title: Text('保存しました。'),
+//          actions: [
+//            FlatButton(
+//              child: Text('OK'),
+//              onPressed: () {
+//                Navigator.of(context).pop();
+//              },
+//            ),
+//          ],
+//        );
+//      },
+//    );
     Navigator.of(context).pop();
   } catch (e) {
     showDialog(

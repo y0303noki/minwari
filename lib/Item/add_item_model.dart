@@ -36,12 +36,10 @@ class AddUpdateItemModel extends ChangeNotifier {
     final key = 'items_${item.tripId}';
     var itemsData = prefs.getString(key);
     // 保存データがない時　通常はサンプルデータを保存するのでありえない
-    print('itemsData:$itemsData');
     if (itemsData == null) {
       final String now = DateTime.now().toString();
       final uuid = Uuid().v1();
       String testMemberId = Uuid().v1();
-      print('uuid:$uuid');
       Item tesItem = Item(
           id: uuid,
           tripId: tripId,

@@ -40,6 +40,8 @@ class HomePage extends StatelessWidget {
             selectedTrip = model.selectedTrip;
           }
 
+          this.switchType = switchButtonService.getSwitchType();
+
           return Scaffold(
             appBar: AppBar(
               leading: Padding(
@@ -55,9 +57,9 @@ class HomePage extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => TripListPage(),
                             fullscreenDialog: false),
-                      ).then((value) async {
+                      ).then((value) {
                         // ここで画面遷移から戻ってきたことを検知できる
-                        switchType = await switchButtonService.getSwitchType();
+                        switchType = switchButtonService.getSwitchType();
                         model.getItems(switchType);
                       });
                     }),
@@ -82,20 +84,6 @@ class HomePage extends StatelessWidget {
                         model.deleteAllItem();
                       },
                     ),
-                    // 更新ボタン（ダサいので変えたい）
-                    IconButton(
-                        icon: Icon(Icons.update),
-                        onPressed: () async {
-                          switchType =
-                              await switchButtonService.getSwitchType();
-                          List<Item> items = await model.getItems(switchType);
-                          if (items == null || items.isEmpty) {
-                            return;
-                          }
-
-                          listTiles =
-                              _setItems(items, model.members, model, context);
-                        }),
                     // メンバー管理ボタン
                     IconButton(
                         icon: Icon(Icons.person),
@@ -115,12 +103,14 @@ class HomePage extends StatelessWidget {
                       Expanded(
                         child: RaisedButton(
                           child: const Text('未精算'),
-                          color: Colors.white,
+                          color: this.switchType == SwitchType.UN_PAID
+                              ? Colors.white70
+                              : Colors.white,
                           shape: Border(
                             bottom: BorderSide(color: Colors.orange),
                             right: BorderSide(color: Colors.grey),
                           ),
-                          onPressed: () async {
+                          onPressed: () {
                             switchButtonService
                                 .setSwitchType(SwitchType.UN_PAID);
                             model.getItems(SwitchType.UN_PAID);
@@ -130,12 +120,14 @@ class HomePage extends StatelessWidget {
                       Expanded(
                         child: RaisedButton(
                           child: const Text('精算済み'),
-                          color: Colors.white,
+                          color: this.switchType == SwitchType.PAID
+                              ? Colors.white70
+                              : Colors.white,
                           shape: Border(
                             bottom: BorderSide(color: Colors.green),
                             right: BorderSide(color: Colors.grey),
                           ),
-                          onPressed: () async {
+                          onPressed: () {
                             switchButtonService.setSwitchType(SwitchType.PAID);
                             model.getItems(SwitchType.PAID);
                           },
@@ -144,11 +136,13 @@ class HomePage extends StatelessWidget {
                       Expanded(
                         child: RaisedButton(
                           child: const Text('全て'),
-                          color: Colors.white,
+                          color: this.switchType == SwitchType.All
+                              ? Colors.white70
+                              : Colors.white,
                           shape: Border(
                             bottom: BorderSide(color: Colors.black),
                           ),
-                          onPressed: () async {
+                          onPressed: () {
                             switchType = SwitchType.All;
                             switchButtonService.setSwitchType(SwitchType.All);
                             model.getItems(SwitchType.All);
@@ -164,8 +158,10 @@ class HomePage extends StatelessWidget {
                   endIndent: 0,
                 ),
                 Expanded(
-                  child: ListView(
-                    children: listTiles,
+                  child: Container(
+                    child: ListView(
+                      children: listTiles,
+                    ),
                   ),
                 )
               ],
@@ -183,8 +179,7 @@ class HomePage extends StatelessWidget {
                 ).then((value) async {
                   // ここで画面遷移から戻ってきたことを検知できる
                   print('モドてきた');
-                  switchType = await switchButtonService.getSwitchType();
-                  model.getItems(switchType);
+                  model.getItems(SwitchType.UN_PAID);
                 });
               },
               child: Icon(Icons.add),
@@ -241,30 +236,123 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
         }
       },
       // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
-      background: Container(color: Colors.blue),
+      background: Container(
+        alignment: Alignment.centerLeft,
+        color: type == SwitchType.UN_PAID ? Colors.green : Colors.orange,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+          child: Icon(
+              type == SwitchType.UN_PAID
+                  ? Icons.check_circle
+                  : Icons.radio_button_unchecked,
+              color: Colors.white),
+        ),
+      ),
 
       // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
-      secondaryBackground: Container(color: Colors.red),
+      secondaryBackground: Container(
+        alignment: Alignment.centerRight,
+        color: Colors.red,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(10.0, 0.0, 20.0, 0.0),
+          child: Icon(Icons.delete, color: Colors.white),
+        ),
+      ),
 
       child: ListTile(
         leading: item.isPaid
             ? const Icon(Icons.check)
             : const Icon(Icons.radio_button_unchecked_outlined),
         title: Text(item.title),
-        subtitle: Text(member != null ? member.name : 'nullだよ'),
+        subtitle: Text(
+          member != null ? member.name : 'メンバーが削除されています',
+          style: member != null
+              ? null
+              : TextStyle(
+                  color: Colors.red,
+                ),
+        ),
         trailing: Text('${item.money.toString()}円'),
         onTap: () async {
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return SimpleDialog(
+                title: Text(item.title),
+                children: [
+                  // コンテンツ領域
+                  SimpleDialogOption(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.person),
+                        Text(member.name),
+                      ],
+                    ),
+                  ),
+                  SimpleDialogOption(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.attach_money),
+                        Text('${item.money.toString()}円'),
+                      ],
+                    ),
+                  ),
+                  SimpleDialogOption(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(null),
+                        Text(
+                            '${item.money} / ${members.length} = ${(item.money / members.length).ceil()}(円/人)'),
+                      ],
+                    ),
+                  ),
+                  SimpleDialogOption(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.note),
+                        Text(item.memo),
+                      ],
+                    ),
+                  ),
+                  RaisedButton(
+                      child: Text('編集画面へ'),
+                      onPressed: () async {
+                        List<Member> members =
+                            await AddUpdateMemberModel().getMembers();
+                        // アイテム追加ダイアログ呼び出し
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddItemPage(members, item),
+                              fullscreenDialog: false),
+                        ).then((value) async {
+                          // ここで画面遷移から戻ってきたことを検知できる
+                          String switchType =
+                              switchButtonService.getSwitchType();
+                          model.getItems(switchType);
+                        });
+                      })
+                ],
+              );
+            },
+          );
+        },
+        onLongPress: () async {
           List<Member> members = await AddUpdateMemberModel().getMembers();
           // アイテム追加ダイアログ呼び出し
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => AddItemPage(members, item),
-                fullscreenDialog: true),
+                fullscreenDialog: false),
           ).then((value) async {
             // ここで画面遷移から戻ってきたことを検知できる
             print('モドてきた');
-            String switchType = await switchButtonService.getSwitchType();
+            String switchType = switchButtonService.getSwitchType();
             model.getItems(switchType);
           });
         },

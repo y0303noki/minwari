@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 class Member {
   String id;
   String tripId;
-  final String name;
-  final String memo;
+  String name;
+  String memo;
   String color;
   final String createdAt;
-  final String updatedAt;
+  String updatedAt;
 
   Member(
       {this.id,

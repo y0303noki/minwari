@@ -33,6 +33,23 @@ class AddUpdateMemberModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future updateMember(Member updateMember) async {
+    String tripId = await AddUpdateTripModel().getSelectedTripId();
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'members_$tripId';
+    var membersData = prefs.getString(key);
+    // stringからList<Member>にデコード
+    List<Member> membersDecoded = Member.decodeMembers(membersData);
+    membersDecoded.removeWhere((member) => member.id == updateMember.id);
+    membersDecoded.add(updateMember);
+
+    // ローカルストレージに保存するためにエンコード
+    final membersEncoded = Member.encodeMembers(membersDecoded);
+    prefs.setString(key, membersEncoded);
+    notifyListeners();
+  }
+
   Future getMembers() async {
     String tripId = await AddUpdateTripModel().getSelectedTripId();
 
