@@ -91,8 +91,11 @@ class AddUpdateItemModel extends ChangeNotifier {
     final tripId = selectedTripId;
 
     List<Trip> trips = await AddUpdateTripModel().getTrips();
-    this.selectedTrip = trips.firstWhere((trip) => trip.id == tripId);
-
+    this.selectedTrip =
+        trips.firstWhere((trip) => trip.id == tripId, orElse: () => null);
+    if (this.selectedTrip == null) {
+      this.selectedTrip = trips.first;
+    }
     final key = 'items_$tripId';
     final itemsData = prefs.getString(key);
     if (itemsData == null) {
