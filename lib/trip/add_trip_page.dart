@@ -120,22 +120,6 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
       updatedAt: now,
     );
     await AddUpdateItemModel().addItem(sampleItem);
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('保存しました。'),
-          actions: [
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
     Navigator.of(context).pop();
   } catch (e) {
     showDialog(

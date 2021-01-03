@@ -28,16 +28,16 @@ class HomePage extends StatelessWidget {
         child: Consumer<AddUpdateItemModel>(
             builder: (consumerContext, model, child) {
           print('consumer');
-          if (model.items == null) {
-            listTiles = [];
-          } else {
-            listTiles = _setItems(model.items, model.members, model, context);
-          }
-
           if (model.selectedTrip == null) {
             selectedTrip = null;
           } else {
             selectedTrip = model.selectedTrip;
+          }
+
+          if (model.items == null) {
+            listTiles = [];
+          } else {
+            listTiles = _setItems(model.items, model.members, model, context);
           }
 
           this.switchType = switchButtonService.getSwitchType();
