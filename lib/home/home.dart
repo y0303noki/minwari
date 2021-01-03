@@ -287,7 +287,14 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(Icons.person),
-                        Text(member.name),
+                        Text(
+                          member != null ? member.name : 'メンバーが削除されています',
+                          style: member != null
+                              ? null
+                              : TextStyle(
+                                  color: Colors.red,
+                                ),
+                        ),
                       ],
                     ),
                   ),
@@ -335,6 +342,7 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
                           String switchType =
                               switchButtonService.getSwitchType();
                           model.getItems(switchType);
+                          Navigator.of(context).pop();
                         });
                       })
                 ],
