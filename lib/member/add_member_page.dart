@@ -109,7 +109,7 @@ Future addMember(AddUpdateMemberModel model, BuildContext context) async {
     final String now = DateTime.now().toString();
     final Member newMember = Member(
         id: Uuid().v1(),
-        tripId: '',
+        tripId: null,
         name: model.name,
         memo: model.memo,
         createdAt: now,

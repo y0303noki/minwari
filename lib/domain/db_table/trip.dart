@@ -2,10 +2,10 @@ import 'dart:convert';
 
 class Trip {
   String id;
-  final String name;
-  final String memo;
+  String name;
+  String memo;
   bool isSelected = false;
-  String createdAt;
+  final String createdAt;
   String updatedAt;
 
   Trip(

@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
+import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';
+import 'package:uuid/uuid.dart';
 
 enum Answers { OK, CANCEL }
 
 class AddTripPage extends StatelessWidget {
+  AddTripPage(this.trip);
+  Trip trip;
 //  List<Widget> listTiles = [];
   final tripNameEditingController = TextEditingController();
   final tripMemoEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    bool isUpdate = trip != null;
+    if (isUpdate) {
+      tripNameEditingController.text = trip.name;
+      tripMemoEditingController.text = trip.memo;
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateTripModel>(
         create: (_) => AddUpdateTripModel(),
         child: Consumer<AddUpdateTripModel>(
             builder: (consumerContext, model, child) {
-          print('itam_page Consumer');
           return Scaffold(
             appBar: AppBar(
               leading: Padding(
@@ -48,7 +57,7 @@ class AddTripPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text('旅行を追加'),
+                  Text(isUpdate ? '旅行を編集' : '旅行を追加'),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
@@ -61,7 +70,7 @@ class AddTripPage extends StatelessWidget {
                     controller: tripMemoEditingController,
                   ),
                   RaisedButton(
-                    child: Text('追加する'),
+                    child: Text(isUpdate ? '編集する' : '追加する'),
                     onPressed: () async {
                       model.name = tripNameEditingController.text;
                       model.memo = tripMemoEditingController.text;
@@ -82,8 +91,66 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
   try {
     final String now = DateTime.now().toString();
     final Trip newTrip = Trip(
-        name: model.name, memo: model.memo, updatedAt: now, createdAt: now);
+        id: Uuid().v1(),
+        name: model.name,
+        memo: model.memo,
+        updatedAt: now,
+        createdAt: now);
     await model.addTrip(newTrip);
+    final Member sampleMember = Member(
+        id: Uuid().v1(),
+        tripId: newTrip.id,
+        name: 'サンプルメンバー',
+        memo: null,
+        color: null,
+        updatedAt: now,
+        createdAt: now);
+    await AddUpdateMemberModel().addMember(sampleMember);
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('保存しました。'),
+          actions: [
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    Navigator.of(context).pop();
+  } catch (e) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(e.toString()),
+          actions: [
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+Future updateTrip(
+    AddUpdateTripModel model, BuildContext context, Trip updatedTrip) async {
+  try {
+    final String now = DateTime.now().toString();
+    updatedTrip.name = model.name;
+    updatedTrip.memo = model.memo;
+    updatedTrip.updatedAt = now;
+    await model.updateTrip(updatedTrip);
     await showDialog(
       context: context,
       builder: (BuildContext context) {

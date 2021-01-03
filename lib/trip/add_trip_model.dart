@@ -11,10 +11,6 @@ class AddUpdateTripModel extends ChangeNotifier {
   List<Trip> trips;
 
   Future addTrip(Trip trip) async {
-    trip.id = Uuid().v1();
-    trip.createdAt = DateTime.now().toString();
-    trip.updatedAt = DateTime.now().toString();
-
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'trips';
     var tripsData = prefs.getString(key);
@@ -27,6 +23,21 @@ class AddUpdateTripModel extends ChangeNotifier {
     // stringからList<Trip>にデコード
     List<Trip> tripsDecoded = Trip.decodeTrips(tripsData);
     tripsDecoded.add(trip);
+
+    // ローカルストレージに保存するためにエンコード
+    final tripsEncoded = Trip.encodeTrips(tripsDecoded);
+    prefs.setString(key, tripsEncoded);
+    notifyListeners();
+  }
+
+  Future updateTrip(Trip updatedTrip) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'trips';
+    var tripsData = prefs.getString(key);
+    // stringからList<Trip>にデコード
+    List<Trip> tripsDecoded = Trip.decodeTrips(tripsData);
+    tripsDecoded.removeWhere((trip) => trip.id == updatedTrip.id);
+    tripsDecoded.add(updatedTrip);
 
     // ローカルストレージに保存するためにエンコード
     final tripsEncoded = Trip.encodeTrips(tripsDecoded);

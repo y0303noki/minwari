@@ -79,7 +79,7 @@ class TripListPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddTripPage(),
+                      builder: (context) => AddTripPage(null),
                       fullscreenDialog: true),
                 ).then((value) {
                   // ここで画面遷移から戻ってきたことを検知できる
@@ -106,6 +106,7 @@ _setTrips(List<Trip> trips, BuildContext context, AddUpdateTripModel model) {
       .map(
         (trip) => Dismissible(
             key: Key(trip.id),
+            direction: DismissDirection.endToStart,
             onDismissed: (direction) {
               // スワイプ方向がendToStart（画面左から右）の場合の処理
               if (direction == DismissDirection.endToStart) {
@@ -119,14 +120,39 @@ _setTrips(List<Trip> trips, BuildContext context, AddUpdateTripModel model) {
             background: Container(color: Colors.blue),
 
             // スワイプ方向がstartToEnd（画面右から左）の場合のバックグラウンドの設定
-            secondaryBackground: Container(color: Colors.red),
+            secondaryBackground: Container(
+              alignment: Alignment.centerRight,
+              color: Colors.red,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(10.0, 0.0, 20.0, 0.0),
+                child: Icon(Icons.delete, color: Colors.white),
+              ),
+            ),
             child: ListTile(
               leading: Icon(Icons.event),
               title: Text(trip.name),
               subtitle: Text(''),
               onTap: () async {
                 await AddUpdateTripModel().selectedTrip(trip);
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                        fullscreenDialog: false));
+
+//                Navigator.pop(context);
+              },
+              onLongPress: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddTripPage(trip),
+                      fullscreenDialog: true),
+                ).then((value) {
+                  // ここで画面遷移から戻ってきたことを検知できる
+                  print('モドてきたtrip');
+                  model.getTrips();
+                });
               },
             )),
       )

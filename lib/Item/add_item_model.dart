@@ -108,6 +108,9 @@ class AddUpdateItemModel extends ChangeNotifier {
 
     // stringからList<Item>にデコード
     List<Item> itemsDecoded = Item.decodeItems(itemsData);
+    if (itemsDecoded.isEmpty || itemsDecoded == null) {
+      return null;
+    }
     // 更新日が最新順にソート
 //    itemsDecoded.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
