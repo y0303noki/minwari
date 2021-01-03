@@ -31,31 +31,26 @@ class AddUpdateItemModel extends ChangeNotifier {
       throw ('メンバーを選択してください。');
     }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final tripId = await AddUpdateTripModel().getSelectedTripId();
-    item.tripId = tripId;
+
+    // trip追加時はitem.tripIdを使う
+    String tripId;
+    if (item.tripId == null) {
+      tripId = await AddUpdateTripModel().getSelectedTripId();
+      item.tripId = tripId;
+    } else {
+      tripId = item.tripId;
+    }
     final key = 'items_${item.tripId}';
     var itemsData = prefs.getString(key);
     // 保存データがない時　通常はサンプルデータを保存するのでありえない
+    List<Item> itemsDecoded;
     if (itemsData == null) {
-      final String now = DateTime.now().toString();
-      final uuid = Uuid().v1();
-      String testMemberId = Uuid().v1();
-      Item tesItem = Item(
-          id: uuid,
-          tripId: tripId,
-          title: 'test',
-          money: 0,
-          memberId: testMemberId,
-          memo: '',
-          isPaid: false,
-          createdAt: now,
-          updatedAt: now);
-      List<Item> testItems = [tesItem];
-      itemsData = Item.encodeItems(testItems);
+      itemsDecoded = [];
+      itemsDecoded.add(item);
+    } else {
+      itemsDecoded = Item.decodeItems(itemsData);
+      itemsDecoded.add(item);
     }
-    // stringからList<Item>にデコード
-    List<Item> itemsDecoded = Item.decodeItems(itemsData);
-    itemsDecoded.add(item);
 
     // ローカルストレージに保存するためにエンコード
     final itemsEncoded = Item.encodeItems(itemsDecoded);

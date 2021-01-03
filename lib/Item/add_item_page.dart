@@ -136,7 +136,7 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
     final String now = DateTime.now().toString();
     final Item newItem = Item(
         id: Uuid().v1(),
-        tripId: '',
+        tripId: null,
         title: model.title,
         money: model.money,
         memberId: model.memberId,

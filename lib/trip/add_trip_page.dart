@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trip_money_local/Item/add_item_model.dart';
+import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
@@ -106,6 +108,18 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
         updatedAt: now,
         createdAt: now);
     await AddUpdateMemberModel().addMember(sampleMember);
+    final Item sampleItem = Item(
+      id: Uuid().v1(),
+      tripId: newTrip.id,
+      title: 'サンプルタスク',
+      money: 1000,
+      memberId: sampleMember.id,
+      memo: null,
+      isPaid: false,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await AddUpdateItemModel().addItem(sampleItem);
     await showDialog(
       context: context,
       builder: (BuildContext context) {
