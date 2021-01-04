@@ -99,6 +99,7 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
         updatedAt: now,
         createdAt: now);
     await model.addTrip(newTrip);
+
     final Member sampleMember = Member(
         id: Uuid().v1(),
         tripId: newTrip.id,
@@ -108,6 +109,7 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
         updatedAt: now,
         createdAt: now);
     await AddUpdateMemberModel().addMember(sampleMember);
+
     final Item sampleItem = Item(
       id: Uuid().v1(),
       tripId: newTrip.id,

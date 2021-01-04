@@ -8,7 +8,6 @@ import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/switchType.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/footer/footer.dart';
-import 'package:trip_money_local/header/header.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/member_list_page.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';

@@ -1,12 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trip_money_local/Item/add_item_model.dart';
+import 'package:trip_money_local/domain/db_table/item.dart';
+import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
+import 'package:trip_money_local/member/add_member_model.dart';
+import 'package:uuid/uuid.dart';
 
 class AddUpdateTripModel extends ChangeNotifier {
   String name = '';
   String memo = '';
   List<Trip> trips;
   Trip selectedTripFromTrip;
+
+  Future createSampleTrip() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String now = DateTime.now().toString();
+    Trip sampleTrip = Trip(
+        id: Uuid().v1(),
+        name: 'サンプル旅',
+        memo: null,
+        isSelected: true,
+        createdAt: now,
+        updatedAt: now);
+    List<Trip> trips = [];
+    trips.add(sampleTrip);
+    final tripsEncoded = Trip.encodeTrips(trips);
+    final key = 'trips';
+    prefs.setString(key, tripsEncoded);
+
+    // 現在のtripに設定
+    final selectedTripId = 'selectedTripId';
+    prefs.setString(selectedTripId, sampleTrip.id);
+
+    final Member sampleMember = Member(
+        id: Uuid().v1(),
+        tripId: sampleTrip.id,
+        name: 'サンプルメンバー',
+        memo: null,
+        color: null,
+        updatedAt: now,
+        createdAt: now);
+    await AddUpdateMemberModel().addMember(sampleMember);
+
+    final Item sampleItem = Item(
+      id: Uuid().v1(),
+      tripId: sampleTrip.id,
+      title: 'サンプルタスク',
+      money: 1000,
+      memberId: sampleMember.id,
+      memo: null,
+      isPaid: false,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await AddUpdateItemModel().addItem(sampleItem);
+
+    notifyListeners();
+  }
 
   Future addTrip(Trip trip) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

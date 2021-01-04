@@ -88,6 +88,13 @@ class AddUpdateItemModel extends ChangeNotifier {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // ストレージからtripidを探す
     String selectedTripId = await AddUpdateTripModel().getSelectedTripId();
+    if (selectedTripId == null) {
+      // 初めてのアプリ起動
+      // サンプルのTrip、Member、Itemを作成する
+      print('初めての起動');
+      await AddUpdateTripModel().createSampleTrip();
+      selectedTripId = await AddUpdateTripModel().getSelectedTripId();
+    }
     String tripId = selectedTripId;
 
     List<Trip> trips = await AddUpdateTripModel().getTrips();
