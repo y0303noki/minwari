@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
-import 'package:trip_money_local/home/home.dart';
+import 'package:trip_money_local/footer/footer.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/add_member_page.dart';
 
@@ -22,23 +22,9 @@ class MemberListPage extends StatelessWidget {
           }
           return Scaffold(
             appBar: AppBar(
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                          fullscreenDialog: false),
-                    );
-                  },
-                ),
-              ),
               actions: [],
               title: Text(
-                'ホーム',
+                'メンバーリスト',
               ),
               backgroundColor: Colors.black87,
               centerTitle: true,
@@ -46,22 +32,22 @@ class MemberListPage extends StatelessWidget {
             ),
             body: Column(
               children: [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    model.selectedTrip == null
+                        ? '読み込み中...'
+                        : model.selectedTrip.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // 更新ボタン（ダサいので変えたい）
-                    IconButton(
-                        icon: Icon(Icons.update),
-                        onPressed: () async {
-                          final test = await model.getMembers();
-                          listTiles = _setMembers(test, model, context);
-                        }),
-                    IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () async {
-                          await model.deleteAllMember(-3);
-                        }),
-                  ],
+                  children: [],
                   // メンバー管理ボタン
                 ),
                 Expanded(
@@ -87,6 +73,7 @@ class MemberListPage extends StatelessWidget {
               child: Icon(Icons.person_add),
               backgroundColor: Colors.green,
             ),
+            bottomNavigationBar: Footer(),
           );
         }),
       ),

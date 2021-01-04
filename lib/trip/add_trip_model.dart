@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
-import 'package:uuid/uuid.dart';
 
 class AddUpdateTripModel extends ChangeNotifier {
   String name = '';
   String memo = '';
   List<Trip> trips;
+  Trip selectedTripFromTrip;
 
   Future addTrip(Trip trip) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -56,6 +54,15 @@ class AddUpdateTripModel extends ChangeNotifier {
     // stringからList<Trip>にデコード
     List<Trip> tripsDecoded = Trip.decodeTrips(tripsData);
     this.trips = tripsDecoded;
+
+    String tripId = await AddUpdateTripModel().getSelectedTripId();
+    if (this.trips == null || this.trips.isEmpty) {
+      print('this.tripsがないです');
+    }
+
+    this.selectedTripFromTrip =
+        this.trips.firstWhere((trip) => trip.id == tripId, orElse: () => null);
+
     notifyListeners();
     return tripsDecoded;
   }

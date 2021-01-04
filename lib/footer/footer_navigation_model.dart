@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 
-class FooterNavigationModel extends ChangeNotifier {
-  int _currentIndex = 0;
+class FooterNavigationService {
+  static FooterNavigationService _instance =
+      FooterNavigationService._internal();
 
-  // getterとsetterを指定しています
-  // setのときにnotifyListeners()を呼ぶことアイコンタップと同時に画面を更新しています。
-  get currentIndex => _currentIndex;
+  String _footerType;
 
-  set currentIndex(int index) {
-    _currentIndex = index;
-    notifyListeners(); // View側に変更を通知
+  FooterNavigationService._internal();
+
+  factory FooterNavigationService() {
+    if (_instance == null) {
+      _instance = FooterNavigationService._internal();
+    }
+    return _instance;
+  }
+
+  String getFooterType() {
+    return this._footerType;
+  }
+
+  void setFooterType(String footerType) {
+    this._footerType = footerType;
   }
 }

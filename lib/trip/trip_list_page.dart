@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
+import 'package:trip_money_local/footer/footer.dart';
+import 'package:trip_money_local/footer/footer_navigation_model.dart';
 import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 import 'package:trip_money_local/trip/add_trip_page.dart';
@@ -24,23 +26,9 @@ class TripListPage extends StatelessWidget {
           }
           return Scaffold(
             appBar: AppBar(
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                          fullscreenDialog: false),
-                    );
-                  },
-                ),
-              ),
               actions: [],
               title: Text(
-                'ホーム',
+                '旅リスト',
               ),
               backgroundColor: Colors.black87,
               centerTitle: true,
@@ -48,22 +36,22 @@ class TripListPage extends StatelessWidget {
             ),
             body: Column(
               children: [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    model.selectedTripFromTrip == null
+                        ? '読み込み中...'
+                        : model.selectedTripFromTrip.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // 更新ボタン（ダサいので変えたい）
-                    IconButton(
-                        icon: Icon(Icons.update),
-                        onPressed: () async {
-                          final test = await model.getTrips();
-                          listTiles = _setTrips(test, context, model);
-                        }),
-                    IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () async {
-                          await model.deleteAllTrip();
-                        }),
-                  ],
+                  children: [],
                   // メンバー管理ボタン
                 ),
                 Expanded(
@@ -90,6 +78,7 @@ class TripListPage extends StatelessWidget {
               child: Icon(Icons.add_box),
               backgroundColor: Colors.green,
             ),
+            bottomNavigationBar: Footer(),
           );
         }),
       ),
@@ -134,13 +123,14 @@ _setTrips(List<Trip> trips, BuildContext context, AddUpdateTripModel model) {
               subtitle: Text(''),
               onTap: () async {
                 await AddUpdateTripModel().selectedTrip(trip);
+                FooterNavigationService footerNavigationService =
+                    FooterNavigationService();
+                footerNavigationService.setFooterType('Home');
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => HomePage(),
                         fullscreenDialog: false));
-
-//                Navigator.pop(context);
               },
               onLongPress: () async {
                 Navigator.push(

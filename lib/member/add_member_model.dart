@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
+import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 
 class AddUpdateMemberModel extends ChangeNotifier {
   String name = '';
   String memo = '';
   List<Member> members;
+  Trip selectedTrip;
 
   Future addMember(Member member) async {
     String tripId;
@@ -57,6 +59,9 @@ class AddUpdateMemberModel extends ChangeNotifier {
 
   Future getMembers() async {
     String tripId = await AddUpdateTripModel().getSelectedTripId();
+    List<Trip> trips = await AddUpdateTripModel().getTrips();
+    this.selectedTrip =
+        trips.firstWhere((trip) => trip.id == tripId, orElse: () => null);
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'members_$tripId';

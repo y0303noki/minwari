@@ -7,11 +7,11 @@ import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/switchType.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
+import 'package:trip_money_local/footer/footer.dart';
 import 'package:trip_money_local/header/header.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/member_list_page.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';
-import 'package:trip_money_local/Item/switch_button_service.dart';
 
 class HomePage extends StatelessWidget {
   List<Widget> listTiles = [];
@@ -41,31 +41,17 @@ class HomePage extends StatelessWidget {
           }
 
           this.switchType = switchButtonService.getSwitchType();
+          if (this.switchType == null) {
+            this.switchType = SwitchType.UN_PAID;
+          }
 
           return Scaffold(
             appBar: AppBar(
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.settings),
-              ),
               actions: [
-                IconButton(
-                    icon: Icon(Icons.list),
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TripListPage(),
-                            fullscreenDialog: false),
-                      ).then((value) {
-                        // ここで画面遷移から戻ってきたことを検知できる
-                        switchType = switchButtonService.getSwitchType();
-                        model.getItems(switchType);
-                      });
-                    }),
+                IconButton(icon: Icon(Icons.settings), onPressed: () async {}),
               ],
               title: Text(
-                selectedTrip == null ? '読み込み中...' : selectedTrip.name,
+                'ホーム',
               ),
               backgroundColor: Colors.black87,
               centerTitle: true,
@@ -73,29 +59,16 @@ class HomePage extends StatelessWidget {
             ),
             body: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // 共有設定ボタン
-                    // とりあえずデータ全消しボタン
-                    IconButton(
-                      icon: Icon(Icons.share),
-                      onPressed: () async {
-                        model.deleteAllItem();
-                      },
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    selectedTrip == null ? '読み込み中...' : selectedTrip.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Theme.of(context).primaryColor,
                     ),
-                    // メンバー管理ボタン
-                    IconButton(
-                        icon: Icon(Icons.person),
-                        onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MemberListPage(),
-                                fullscreenDialog: true),
-                          );
-                        }),
-                  ],
+                  ),
                 ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,9 +159,42 @@ class HomePage extends StatelessWidget {
               child: Icon(Icons.add),
               backgroundColor: Colors.green,
             ),
+            bottomNavigationBar: Footer(),
+
+//            bottomNavigationBar: BottomNavigationBar(
+//              items: bottomList,
+//              currentIndex: _selectedIndex,
+//              selectedItemColor: Colors.amber[800],
+//              onTap: (int index) {
+//                _onItemTapped(index, context);
+//              },
+//            ),
           );
         }),
       ),
+    );
+  }
+}
+
+_onItemTapped(int index, BuildContext context) {
+  print(index);
+  if (index == 0) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => HomePage(), fullscreenDialog: true),
+    );
+  } else if (index == 1) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => MemberListPage(), fullscreenDialog: true),
+    );
+  } else if (index == 2) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => TripListPage(), fullscreenDialog: true),
     );
   }
 }
