@@ -105,6 +105,47 @@ List<Widget> _setMembers(
         (member) => Dismissible(
           key: Key(member.id),
           direction: DismissDirection.endToStart,
+          confirmDismiss: (DismissDirection direction) async {
+            return await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                if (members.length == 1) {
+                  return AlertDialog(
+                    title: Text("削除できません"),
+                    content: Text('メンバーリストは必ず1つ以上残してください。'),
+                    actions: [
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text(
+                          'OK',
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return AlertDialog(
+                    title: Text("削除しますか？"),
+                    content: Text('この項目を削除すると復元することはできません。'),
+                    actions: [
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text(
+                          '削除',
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text(
+                          'キャンセル',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            );
+          },
           onDismissed: (direction) {
             // スワイプ方向がendToStart（画面左から右）の場合の処理
             if (direction == DismissDirection.endToStart) {

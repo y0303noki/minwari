@@ -233,6 +233,32 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
           ? DismissDirection.endToStart
           : DismissDirection.horizontal,
       key: Key(item.id),
+      confirmDismiss: (DismissDirection direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("削除しますか？"),
+              content: Text('この項目を削除すると復元することはできません。'),
+              actions: [
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text(
+                    '削除',
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text(
+                    'キャンセル',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
       onDismissed: (direction) async {
         // スワイプ方向がendToStart（画面左から右）の場合の処理
         if (direction == DismissDirection.endToStart) {
