@@ -203,11 +203,11 @@ class AddUpdateItemModel extends ChangeNotifier {
   }
 
   // ドロップダウン
-  List<String> _orderTypeList = ['latest', 'oldest', 'high', 'low'];
+  List<String> _orderTypeJPList = ['新しい順', '古い順', '高い順', '安い順'];
 
   String _selectedOrderType;
 
-  List<String> get orderTypeList => _orderTypeList;
+  List<String> get orderTypeJPList => _orderTypeJPList;
   String get selectedOrderType => _selectedOrderType;
 
   // 並び替える種類をセット
@@ -223,13 +223,13 @@ class AddUpdateItemModel extends ChangeNotifier {
       return;
     }
 
-    if (orderType == 'latest') {
+    if (orderType == '新しい順') {
       this.items.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
-    } else if (orderType == 'oldest') {
+    } else if (orderType == '古い順') {
       this.items.sort((a, b) => -a.updatedAt.compareTo(b.updatedAt));
-    } else if (orderType == 'high') {
+    } else if (orderType == '高い順') {
       this.items.sort((a, b) => -a.money.compareTo(b.money));
-    } else if (orderType == 'low') {
+    } else if (orderType == '安い順') {
       this.items.sort((a, b) => a.money.compareTo(b.money));
     }
   }

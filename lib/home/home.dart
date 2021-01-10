@@ -409,7 +409,7 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
 
 // ドロップダウン
 Widget dropDownList(BuildContext context, AddUpdateItemModel model) {
-  String dropdownValue = model.selectedOrderType ?? model.orderTypeList.first;
+  String dropdownValue = model.selectedOrderType ?? model.orderTypeJPList.first;
   return DropdownButton<String>(
     value: dropdownValue,
     icon: Icon(Icons.arrow_downward),
@@ -423,7 +423,7 @@ Widget dropDownList(BuildContext context, AddUpdateItemModel model) {
     onChanged: (String newValue) {
       model.setOrderItem(newValue);
     },
-    items: model.orderTypeList.map<DropdownMenuItem<String>>((String value) {
+    items: model.orderTypeJPList.map<DropdownMenuItem<String>>((String value) {
       return DropdownMenuItem<String>(
         value: value,
         child: Text(value),

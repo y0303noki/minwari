@@ -162,6 +162,7 @@ _setTrips(List<Trip> trips, BuildContext context, AddUpdateTripModel model) {
               leading: Icon(Icons.event),
               title: Text(trip.name),
               subtitle: Text(''),
+              trailing: Text(trip.eventAt != null ? trip.eventAt : '未設定'),
               onTap: () async {
                 await AddUpdateTripModel().selectedTrip(trip);
                 FooterNavigationService footerNavigationService =
@@ -181,7 +182,6 @@ _setTrips(List<Trip> trips, BuildContext context, AddUpdateTripModel model) {
                       fullscreenDialog: true),
                 ).then((value) {
                   // ここで画面遷移から戻ってきたことを検知できる
-                  print('モドてきたtrip');
                   model.getTrips();
                 });
               },

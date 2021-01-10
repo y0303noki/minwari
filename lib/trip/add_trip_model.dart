@@ -60,6 +60,13 @@ class AddUpdateTripModel extends ChangeNotifier {
   }
 
   Future addTrip(Trip trip) async {
+    if (trip.name == null || trip.name.length <= 0) {
+      throw ('タイトルを入力してください。');
+    }
+    if (trip.eventAt == null || trip.eventAt == '') {
+      throw ('開催日を選択してください。');
+    }
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'trips';
     var tripsData = prefs.getString(key);
@@ -180,5 +187,12 @@ class AddUpdateTripModel extends ChangeNotifier {
     prefs.setString(key, tripsEncoded);
     // itemsを最新にしないと怒られる
     await getTrips();
+  }
+
+  // イベント日付選択
+  String eventDate;
+  setEventDate(String pickDate) {
+    eventDate = pickDate;
+    notifyListeners();
   }
 }

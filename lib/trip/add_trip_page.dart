@@ -17,6 +17,7 @@ class AddTripPage extends StatelessWidget {
 //  List<Widget> listTiles = [];
   final tripNameEditingController = TextEditingController();
   final tripMemoEditingController = TextEditingController();
+  final tripEventDateEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,11 @@ class AddTripPage extends StatelessWidget {
     if (isUpdate) {
       tripNameEditingController.text = trip.name;
       tripMemoEditingController.text = trip.memo;
+      if (trip.eventAt != null) {
+        tripEventDateEditingController.text = trip.eventAt;
+      }
     }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
       home: ChangeNotifierProvider<AddUpdateTripModel>(
@@ -71,12 +76,47 @@ class AddTripPage extends StatelessWidget {
                     decoration: InputDecoration(labelText: 'メモとか'),
                     controller: tripMemoEditingController,
                   ),
+                  TextField(
+                    readOnly: true,
+                    decoration: InputDecoration(labelText: '開催日'),
+                    controller: tripEventDateEditingController,
+                    onTap: () async {
+                      // tripの更新なら初期値を更新前でセット
+                      DateTime initial = DateTime.now();
+                      if (tripEventDateEditingController.text != '') {
+                        initial =
+                            DateTime.parse(tripEventDateEditingController.text);
+                      }
+
+                      final DateTime picked = await showDatePicker(
+                          context: context,
+                          initialDate: initial,
+                          firstDate: DateTime(2018),
+                          lastDate: DateTime.now().add(Duration(days: 360)));
+                      if (picked != null) {
+                        final year = picked.year;
+                        final month = picked.month < 10
+                            ? '0${picked.month}'
+                            : '${picked.month}';
+                        final day = picked.day;
+                        final eventDateStr =
+                            '${year.toString()}-$month-${day.toString()}';
+                        tripEventDateEditingController.text = eventDateStr;
+                        // 日時反映
+                      }
+                    },
+                  ),
                   RaisedButton(
                     child: Text(isUpdate ? '編集する' : '追加する'),
                     onPressed: () async {
                       model.name = tripNameEditingController.text;
                       model.memo = tripMemoEditingController.text;
-                      await addTrip(model, context);
+                      model.eventDate = tripEventDateEditingController.text;
+                      if (isUpdate) {
+                        await updateTrip(model, context, trip);
+                      } else {
+                        await addTrip(model, context);
+                      }
                     },
                   ),
                 ],
@@ -92,10 +132,12 @@ class AddTripPage extends StatelessWidget {
 Future addTrip(AddUpdateTripModel model, BuildContext context) async {
   try {
     final String now = DateTime.now().toString();
+    final String eventDate = model.eventDate.toString();
     final Trip newTrip = Trip(
         id: Uuid().v1(),
         name: model.name,
         memo: model.memo,
+        eventAt: eventDate,
         updatedAt: now,
         createdAt: now);
     await model.addTrip(newTrip);
@@ -149,6 +191,7 @@ Future updateTrip(
     final String now = DateTime.now().toString();
     updatedTrip.name = model.name;
     updatedTrip.memo = model.memo;
+    updatedTrip.eventAt = model.eventDate;
     updatedTrip.updatedAt = now;
     await model.updateTrip(updatedTrip);
     await showDialog(
