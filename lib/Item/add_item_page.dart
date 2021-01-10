@@ -51,12 +51,13 @@ class AddItemPage extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                          fullscreenDialog: false),
-                    );
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                          builder: (context) => HomePage(),
+//                          fullscreenDialog: false),
+//                    );
+                    Navigator.of(context).pop();
                   },
                 ),
               ),

@@ -43,12 +43,13 @@ class AddTripPage extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TripListPage(),
-                          fullscreenDialog: false),
-                    );
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                          builder: (context) => TripListPage(),
+//                          fullscreenDialog: false),
+//                    );
+                    Navigator.of(context).pop();
                   },
                 ),
               ),
@@ -98,7 +99,9 @@ class AddTripPage extends StatelessWidget {
                         final month = picked.month < 10
                             ? '0${picked.month}'
                             : '${picked.month}';
-                        final day = picked.day;
+                        final day = picked.day < 10
+                            ? '0${picked.day}'
+                            : '${picked.day}';
                         final eventDateStr =
                             '${year.toString()}-$month-${day.toString()}';
                         tripEventDateEditingController.text = eventDateStr;

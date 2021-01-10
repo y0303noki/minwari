@@ -29,7 +29,6 @@ class AddMemberPage extends StatelessWidget {
         create: (_) => AddUpdateMemberModel(),
         child: Consumer<AddUpdateMemberModel>(
             builder: (consumerContext, model, child) {
-          print('itam_page Consumer');
           return Scaffold(
             appBar: AppBar(
               leading: Padding(
@@ -37,12 +36,13 @@ class AddMemberPage extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MemberListPage(),
-                          fullscreenDialog: false),
-                    );
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                          builder: (context) => MemberListPage(),
+//                          fullscreenDialog: false),
+//                    );
+                    Navigator.of(context).pop();
                   },
                 ),
               ),

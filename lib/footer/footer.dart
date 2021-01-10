@@ -46,23 +46,29 @@ class Footer extends StatelessWidget {
           this.footerNavigationService.setFooterType('Home');
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(), fullscreenDialog: false),
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => HomePage(),
+              transitionDuration: Duration(seconds: 0),
+            ),
           );
         } else if (index == 1) {
           this.footerNavigationService.setFooterType('Member');
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) => MemberListPage(),
-                fullscreenDialog: false),
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) =>
+                  MemberListPage(),
+              transitionDuration: Duration(seconds: 0),
+            ),
           );
         } else if (index == 2) {
           this.footerNavigationService.setFooterType('Trip');
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) => TripListPage(), fullscreenDialog: false),
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => TripListPage(),
+              transitionDuration: Duration(seconds: 0),
+            ),
           );
         }
 
