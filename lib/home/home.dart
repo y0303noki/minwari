@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -122,13 +122,12 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ]),
-                const Divider(
-                  color: Colors.black,
-                  height: 20,
-                  thickness: 5,
-                  indent: 20,
-                  endIndent: 0,
-                ),
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: dropDownList(context, model),
+                  )
+                ]),
                 Expanded(
                   child: Container(
                     child: ListView(
@@ -233,30 +232,34 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
           : DismissDirection.horizontal,
       key: Key(item.id),
       confirmDismiss: (DismissDirection direction) async {
-        return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("削除しますか？"),
-              content: Text('この項目を削除すると復元することはできません。'),
-              actions: [
-                FlatButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: Text(
-                    '削除',
+        if (direction == DismissDirection.endToStart) {
+          return await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("削除しますか？"),
+                content: Text('この項目を削除すると復元することはできません。'),
+                actions: [
+                  FlatButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(
+                      '削除',
+                    ),
                   ),
-                ),
-                FlatButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text(
-                    'キャンセル',
-                    style: TextStyle(color: Colors.grey),
+                  FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text(
+                      'キャンセル',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
-        );
+                ],
+              );
+            },
+          );
+        } else {
+          return true;
+        }
       },
       onDismissed: (direction) async {
         // スワイプ方向がendToStart（画面左から右）の場合の処理
@@ -394,6 +397,7 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
             print('モドてきた');
             String switchType = switchButtonService.getSwitchType();
             model.getItems(switchType);
+            model.getItems(switchType);
           });
         },
       ),
@@ -401,4 +405,29 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
   }
 
   return listItems;
+}
+
+// ドロップダウン
+Widget dropDownList(BuildContext context, AddUpdateItemModel model) {
+  String dropdownValue = model.selectedOrderType ?? model.orderTypeList.first;
+  return DropdownButton<String>(
+    value: dropdownValue,
+    icon: Icon(Icons.arrow_downward),
+    iconSize: 24,
+    elevation: 16,
+    style: TextStyle(color: Colors.black),
+    underline: Container(
+      height: 2,
+      color: Colors.grey,
+    ),
+    onChanged: (String newValue) {
+      model.setOrderItem(newValue);
+    },
+    items: model.orderTypeList.map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+    }).toList(),
+  );
 }

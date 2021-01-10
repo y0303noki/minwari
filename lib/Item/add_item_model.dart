@@ -201,4 +201,36 @@ class AddUpdateItemModel extends ChangeNotifier {
     // itemsを最新にしないと怒られる
     await getItems(type);
   }
+
+  // ドロップダウン
+  List<String> _orderTypeList = ['latest', 'oldest', 'high', 'low'];
+
+  String _selectedOrderType;
+
+  List<String> get orderTypeList => _orderTypeList;
+  String get selectedOrderType => _selectedOrderType;
+
+  // 並び替える種類をセット
+  setOrderItem(String orderType) {
+    _selectedOrderType = orderType;
+    rearrangesItems(orderType);
+    notifyListeners();
+  }
+
+  // タスクを並び替える
+  rearrangesItems(String orderType) {
+    if (this.items == null || this.items.isEmpty) {
+      return;
+    }
+
+    if (orderType == 'latest') {
+      this.items.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+    } else if (orderType == 'oldest') {
+      this.items.sort((a, b) => -a.updatedAt.compareTo(b.updatedAt));
+    } else if (orderType == 'high') {
+      this.items.sort((a, b) => -a.money.compareTo(b.money));
+    } else if (orderType == 'low') {
+      this.items.sort((a, b) => a.money.compareTo(b.money));
+    }
+  }
 }

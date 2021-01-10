@@ -41,7 +41,7 @@ class MemberListPage extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -172,6 +172,46 @@ List<Widget> _setMembers(
           child: ListTile(
             leading: Icon(Icons.person),
             title: Text(member.name),
+            onTap: () async {
+              // タップして詳細表示
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return SimpleDialog(
+                    title: Text(member.name),
+                    children: [
+                      // コンテンツ領域
+                      SimpleDialogOption(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.note),
+                            Text(member.memo),
+                          ],
+                        ),
+                      ),
+                      RaisedButton(
+                          child: Text('編集画面へ'),
+                          onPressed: () async {
+                            List<Member> members =
+                                await AddUpdateMemberModel().getMembers();
+                            // アイテム追加ダイアログ呼び出し
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddMemberPage(member),
+                                  fullscreenDialog: false),
+                            ).then((value) async {
+                              // ここで画面遷移から戻ってきたことを検知できる
+                              model.getMembers();
+                              Navigator.of(context).pop();
+                            });
+                          })
+                    ],
+                  );
+                },
+              );
+            },
             onLongPress: () async {
               Navigator.push(
                 context,
@@ -180,7 +220,6 @@ List<Widget> _setMembers(
                     fullscreenDialog: true),
               ).then((value) {
                 // ここで画面遷移から戻ってきたことを検知できる
-                print('モドてきたメンバ');
                 model.getMembers();
               });
             },
