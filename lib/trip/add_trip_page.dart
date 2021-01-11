@@ -122,6 +122,54 @@ class AddTripPage extends StatelessWidget {
                       }
                     },
                   ),
+                  Visibility(
+                    // 編集モードのの時だけ削除ボタンを表示する
+                    visible: isUpdate,
+                    child: RaisedButton(
+                        child: Text('削除する'),
+                        onPressed: () async {
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("削除しますか？"),
+                                content: Text('この項目を削除すると復元することはできません。'),
+                                actions: [
+                                  FlatButton(
+                                    onPressed: () async {
+                                      await model.deleteTrip(trip);
+                                      // ダイアログを消してtrip画面まで戻る
+                                      Navigator.of(context).pop();
+                                      Navigator.pushReplacement(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation1,
+                                                  animation2) =>
+                                              TripListPage(),
+                                          transitionDuration:
+                                              Duration(seconds: 0),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text(
+                                      '削除する',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text(
+                                      'キャンセル',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }),
+                  ),
                 ],
               ),
             ),

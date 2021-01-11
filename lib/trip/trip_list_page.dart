@@ -6,6 +6,7 @@ import 'package:trip_money_local/footer/footer_navigation_model.dart';
 import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 import 'package:trip_money_local/trip/add_trip_page.dart';
+import 'dart:math';
 
 class TripListPage extends StatelessWidget {
   GridView listTiles;
@@ -133,43 +134,65 @@ class TripListPage extends StatelessWidget {
     for (int i = 0; i < this.tripList.length; i++) {
       Trip selectedTrip = this.tripList[i];
       tiles.add(
-        GridTile(
-          child: InkResponse(
-            enableFeedback: true,
-            onDoubleTap: () async {
-              await AddUpdateTripModel().selectedTrip(selectedTrip);
-              FooterNavigationService footerNavigationService =
-                  FooterNavigationService();
-              footerNavigationService.setFooterType('Home');
-              Navigator.push(
-                  this.tripListPageContext,
-                  MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                      fullscreenDialog: false));
-            },
-            onLongPress: () async {
-              _onTileClicked(selectedTrip, model);
-            },
-            child: Column(
-              children: [
-                Image.asset(
-                  assetsImage,
-                  fit: BoxFit.cover,
-                ),
-                Container(
-                  margin: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        '${selectedTrip.name}',
-                      ),
-                      Text(
-                        selectedTrip.eventAt,
-                      ),
-                    ],
+        Container(
+          decoration: BoxDecoration(
+            border: model.selectedTripFromTrip == selectedTrip
+                ? Border.all(color: Colors.red)
+                : null,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: GridTile(
+            child: InkResponse(
+              enableFeedback: true,
+              onTap: () async {
+                // ダブルタップで旅切り替え
+                await AddUpdateTripModel().selectedTrip(selectedTrip);
+                FooterNavigationService footerNavigationService =
+                    FooterNavigationService();
+                footerNavigationService.setFooterType('Home');
+                Navigator.push(
+                    this.tripListPageContext,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                        fullscreenDialog: false));
+              },
+              child: Column(
+                children: [
+                  Image.asset(
+                    assetsImage,
+                    fit: BoxFit.cover,
                   ),
-                ),
-              ],
+                  Container(
+                    margin: EdgeInsets.all(16.0),
+                    child: Column(
+//                    crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${selectedTrip.name}',
+                        ),
+                        Text(
+                          selectedTrip.eventAt,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 70,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            _onTileClicked(selectedTrip, model);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -197,14 +220,16 @@ class TripListPage extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            new BoxShadow(
-              color: Colors.grey,
-              offset: new Offset(5.0, 5.0),
-              blurRadius: 10.0,
-            )
-          ],
+          border: Border.all(color: Colors.red),
+          borderRadius: BorderRadius.circular(10),
+//          color: Colors.black,
+//          boxShadow: [
+//            new BoxShadow(
+//              color: Colors.grey,
+//              offset: new Offset(5.0, 5.0),
+//              blurRadius: 10.0,
+//            )
+//          ],
         ),
         child: Column(children: [
           Image.asset(
