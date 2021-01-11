@@ -63,17 +63,35 @@ class TripListPage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                // アイテム追加ダイアログ呼び出し
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddTripPage(null),
-                      fullscreenDialog: true),
-                ).then((value) {
-                  // ここで画面遷移から戻ってきたことを検知できる
-                  print('モドてきたtrip');
-                  model.getTrips();
-                });
+                if (listTiles.length >= 5) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('旅リストは5個までしか作成できません。不要な旅を削除してください。'),
+                        actions: [
+                          FlatButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  // アイテム追加ダイアログ呼び出し
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddTripPage(null),
+                        fullscreenDialog: true),
+                  ).then((value) {
+                    // ここで画面遷移から戻ってきたことを検知できる
+                    model.getTrips();
+                  });
+                }
               },
               child: Icon(Icons.add_box),
               backgroundColor: Colors.green,

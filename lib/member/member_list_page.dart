@@ -59,16 +59,35 @@ class MemberListPage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddMemberPage(null),
-                      fullscreenDialog: true),
-                ).then((value) {
-                  // ここで画面遷移から戻ってきたことを検知できる
-                  print('モドてきたメンバ');
-                  model.getMembers();
-                });
+                if (listTiles.length >= 11) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('メンバーリストは5個までしか作成できません。不要なメンバーを削除してください。'),
+                        actions: [
+                          FlatButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddMemberPage(null),
+                        fullscreenDialog: true),
+                  ).then((value) {
+                    // ここで画面遷移から戻ってきたことを検知できる
+                    print('モドてきたメンバ');
+                    model.getMembers();
+                  });
+                }
               },
               child: Icon(Icons.person_add),
               backgroundColor: Colors.green,
