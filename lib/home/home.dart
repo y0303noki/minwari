@@ -149,7 +149,6 @@ class HomePage extends StatelessWidget {
                       fullscreenDialog: true),
                 ).then((value) async {
                   // ここで画面遷移から戻ってきたことを検知できる
-                  print('モドてきた');
                   switchButtonService.setSwitchType(SwitchType.UN_PAID);
                   model.getItems(SwitchType.UN_PAID);
                 });
