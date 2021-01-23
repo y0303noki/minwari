@@ -22,6 +22,8 @@ class AddUpdateTripModel extends ChangeNotifier {
         memo: null,
         isSelected: true,
         createdAt: now,
+        eventAt: now,
+        eventEndAt: now,
         updatedAt: now);
     List<Trip> trips = [];
     trips.add(sampleTrip);
@@ -193,6 +195,13 @@ class AddUpdateTripModel extends ChangeNotifier {
   String eventDate;
   setEventDate(String pickDate) {
     eventDate = pickDate;
+    notifyListeners();
+  }
+
+  // イベント終了日付
+  String eventEndDate;
+  setEventEndDate(String pickDate) {
+    eventEndDate = pickDate;
     notifyListeners();
   }
 }

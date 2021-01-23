@@ -137,9 +137,14 @@ class TripListPage extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             border: model.selectedTripFromTrip == selectedTrip
-                ? Border.all(color: Colors.red)
-                : null,
-            borderRadius: BorderRadius.circular(10),
+                ? Border.all(
+                    color: Colors.red,
+                    width: 5.0,
+                  )
+                : Border.all(
+                    color: Colors.grey,
+                  ),
+            borderRadius: BorderRadius.circular(1),
           ),
           child: GridTile(
             child: InkResponse(
@@ -158,20 +163,29 @@ class TripListPage extends StatelessWidget {
               },
               child: Column(
                 children: [
-                  Image.asset(
-                    assetsImage,
-                    fit: BoxFit.cover,
+                  Expanded(
+                    child: Image.asset(
+                      assetsImage,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Container(
-                    margin: EdgeInsets.all(16.0),
+//                    margin: EdgeInsets.all(16.0),
                     child: Column(
-//                    crossAxisAlignment: CrossAxisAlignment.end,
+//                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           '${selectedTrip.name}',
                         ),
+                        SizedBox(height: 5),
                         Text(
                           selectedTrip.eventAt,
+                        ),
+                        Text('~'),
+                        Text(
+                          selectedTrip.eventEndAt == null
+                              ? ''
+                              : selectedTrip.eventEndAt,
                         ),
                       ],
                     ),

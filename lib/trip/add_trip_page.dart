@@ -18,6 +18,7 @@ class AddTripPage extends StatelessWidget {
   final tripNameEditingController = TextEditingController();
   final tripMemoEditingController = TextEditingController();
   final tripEventDateEditingController = TextEditingController();
+  final tripEventEndDateEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,7 @@ class AddTripPage extends StatelessWidget {
                   ),
                   TextField(
                     readOnly: true,
-                    decoration: InputDecoration(labelText: '開催日'),
+                    decoration: InputDecoration(labelText: '出発日'),
                     controller: tripEventDateEditingController,
                     onTap: () async {
                       // tripの更新なら初期値を更新前でセット
@@ -109,12 +110,46 @@ class AddTripPage extends StatelessWidget {
                       }
                     },
                   ),
+                  TextField(
+                    readOnly: true,
+                    decoration: InputDecoration(labelText: '帰宅日'),
+                    controller: tripEventEndDateEditingController,
+                    onTap: () async {
+                      // tripの更新なら初期値を更新前でセット
+                      DateTime initial = DateTime.now();
+                      if (tripEventEndDateEditingController.text != '') {
+                        initial = DateTime.parse(
+                            tripEventEndDateEditingController.text);
+                      }
+
+                      final DateTime picked = await showDatePicker(
+                          context: context,
+                          initialDate: initial,
+                          firstDate: DateTime(2018),
+                          lastDate: DateTime.now().add(Duration(days: 360)));
+                      if (picked != null) {
+                        final year = picked.year;
+                        final month = picked.month < 10
+                            ? '0${picked.month}'
+                            : '${picked.month}';
+                        final day = picked.day < 10
+                            ? '0${picked.day}'
+                            : '${picked.day}';
+                        final eventDateStr =
+                            '${year.toString()}-$month-${day.toString()}';
+                        tripEventEndDateEditingController.text = eventDateStr;
+                        // 日時反映
+                      }
+                    },
+                  ),
                   RaisedButton(
                     child: Text(isUpdate ? '編集する' : '追加する'),
                     onPressed: () async {
                       model.name = tripNameEditingController.text;
                       model.memo = tripMemoEditingController.text;
                       model.eventDate = tripEventDateEditingController.text;
+                      model.eventEndDate =
+                          tripEventEndDateEditingController.text;
                       if (isUpdate) {
                         await updateTrip(model, context, trip);
                       } else {
@@ -184,11 +219,13 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
   try {
     final String now = DateTime.now().toString();
     final String eventDate = model.eventDate.toString();
+    final String eventEndAt = model.eventEndDate.toString();
     final Trip newTrip = Trip(
         id: Uuid().v1(),
         name: model.name,
         memo: model.memo,
         eventAt: eventDate,
+        eventEndAt: eventEndAt,
         updatedAt: now,
         createdAt: now);
     await model.addTrip(newTrip);
@@ -243,6 +280,7 @@ Future updateTrip(
     updatedTrip.name = model.name;
     updatedTrip.memo = model.memo;
     updatedTrip.eventAt = model.eventDate;
+    updatedTrip.eventEndAt = model.eventEndDate;
     updatedTrip.updatedAt = now;
     await model.updateTrip(updatedTrip);
     await showDialog(

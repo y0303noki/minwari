@@ -7,6 +7,7 @@ class Trip {
   bool isSelected = false;
   final String createdAt;
   String eventAt;
+  String eventEndAt;
   String updatedAt;
 
   Trip(
@@ -16,6 +17,7 @@ class Trip {
       this.isSelected,
       this.createdAt,
       this.eventAt,
+      this.eventEndAt,
       this.updatedAt});
 
   factory Trip.fromJson(Map<String, dynamic> jsonData) {
@@ -26,6 +28,7 @@ class Trip {
       isSelected: jsonData['isSelected'],
       createdAt: jsonData['createdAt'],
       eventAt: jsonData['eventAt'],
+      eventEndAt: jsonData['eventEndAt'],
       updatedAt: jsonData['updatedAt'],
     );
   }
@@ -37,6 +40,7 @@ class Trip {
         'isSelected': trip.isSelected,
         'createdAt': trip.createdAt,
         'eventAt': trip.eventAt,
+        'eventEndAt': trip.eventEndAt,
         'updatedAt': trip.updatedAt,
       };
 
