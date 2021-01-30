@@ -11,7 +11,6 @@ class Footer extends StatelessWidget {
   String footerType;
   @override
   Widget build(BuildContext context) {
-    print('build:$footerType');
     footerType = this.footerNavigationService.getFooterType();
     if (footerType == null) {
       footerType = 'Home';

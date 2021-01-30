@@ -30,6 +30,9 @@ class AddUpdateItemModel extends ChangeNotifier {
     if (item.memberId == null) {
       throw ('メンバーを選択してください。');
     }
+    List<String> checkList = [];
+    checkList.add(item.memberId);
+    item.checkMemberList = checkList;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // trip追加時はitem.tripIdを使う
@@ -232,5 +235,9 @@ class AddUpdateItemModel extends ChangeNotifier {
     } else if (orderType == '安い順') {
       this.items.sort((a, b) => a.money.compareTo(b.money));
     }
+  }
+
+  changeCheckBox(String memberId, bool isCheck) {
+    print(isCheck);
   }
 }
