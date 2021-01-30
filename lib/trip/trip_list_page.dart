@@ -163,44 +163,40 @@ class TripListPage extends StatelessWidget {
               },
               child: Column(
                 children: [
-                  Expanded(
-                    child: Image.asset(
-                      assetsImage,
-                      fit: BoxFit.cover,
+                  Stack(children: [
+                    Image.asset(
+                      selectedTrip.thumbnail ?? 'images/tripImage0.jpg',
                     ),
-                  ),
+                    Icon(
+                      Icons.circle,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.edit_rounded),
+                      onPressed: () {
+                        _onTileClicked(selectedTrip, model);
+                      },
+                    ),
+                  ]),
                   Container(
-//                    margin: EdgeInsets.all(16.0),
                     child: Column(
 //                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           '${selectedTrip.name}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
                         SizedBox(height: 5),
                         Text(
                           selectedTrip.eventAt,
                         ),
-                        Text('~'),
+//                        Text('~'),
                         Text(
-                          selectedTrip.eventEndAt == null
-                              ? ''
-                              : selectedTrip.eventEndAt,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 70,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            _onTileClicked(selectedTrip, model);
-                          },
+                          selectedTrip.eventEndAt,
                         ),
                       ],
                     ),

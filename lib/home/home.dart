@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    selectedTrip == null ? '読み込み中...' : selectedTrip.name,
+                    selectedTrip == null ? '' : selectedTrip.name,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -355,7 +355,7 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(Icons.note),
-                        Text(item.memo),
+                        Text(item.memo ?? ''),
                       ],
                     ),
                   ),

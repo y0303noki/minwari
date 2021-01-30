@@ -5,6 +5,7 @@ class Trip {
   String name;
   String memo;
   bool isSelected = false;
+  String thumbnail;
   final String createdAt;
   String eventAt;
   String eventEndAt;
@@ -15,6 +16,7 @@ class Trip {
       this.name,
       this.memo,
       this.isSelected,
+      this.thumbnail,
       this.createdAt,
       this.eventAt,
       this.eventEndAt,
@@ -26,6 +28,7 @@ class Trip {
       name: jsonData['name'],
       memo: jsonData['memo'],
       isSelected: jsonData['isSelected'],
+      thumbnail: jsonData['thumbnail'],
       createdAt: jsonData['createdAt'],
       eventAt: jsonData['eventAt'],
       eventEndAt: jsonData['eventEndAt'],
@@ -38,6 +41,7 @@ class Trip {
         'name': trip.name,
         'memo': trip.memo,
         'isSelected': trip.isSelected,
+        'thumbnail': trip.thumbnail,
         'createdAt': trip.createdAt,
         'eventAt': trip.eventAt,
         'eventEndAt': trip.eventEndAt,

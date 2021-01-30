@@ -8,6 +8,7 @@ import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:math';
 
 enum Answers { OK, CANCEL }
 
@@ -28,6 +29,9 @@ class AddTripPage extends StatelessWidget {
       tripMemoEditingController.text = trip.memo;
       if (trip.eventAt != null) {
         tripEventDateEditingController.text = trip.eventAt;
+      }
+      if (trip.eventEndAt != null) {
+        tripEventEndDateEditingController.text = trip.eventEndAt;
       }
     }
 
@@ -217,6 +221,7 @@ class AddTripPage extends StatelessWidget {
 
 Future addTrip(AddUpdateTripModel model, BuildContext context) async {
   try {
+    String thumbnail = await makeThumbnails(model);
     final String now = DateTime.now().toString();
     final String eventDate = model.eventDate.toString();
     final String eventEndAt = model.eventEndDate.toString();
@@ -224,6 +229,7 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
         id: Uuid().v1(),
         name: model.name,
         memo: model.memo,
+        thumbnail: thumbnail,
         eventAt: eventDate,
         eventEndAt: eventEndAt,
         updatedAt: now,
@@ -317,5 +323,31 @@ Future updateTrip(
         );
       },
     );
+  }
+}
+
+Future<String> makeThumbnails(AddUpdateTripModel model) async {
+  List<Trip> trips = await model.getTrips();
+  // 0~5までの乱数生成
+  int loopBreakNumber = 0;
+  while (true) {
+    Random random = new Random();
+    int randomNumber = random.nextInt(5);
+    String imageName = 'images/tripImage$randomNumber.jpg';
+    Trip findTrip = null;
+    if (trips != null && !trips.isEmpty) {
+      findTrip = trips.firstWhere((element) => element.thumbnail == imageName,
+          orElse: () => null);
+    }
+
+    if (findTrip == null) {
+      return imageName;
+    }
+    loopBreakNumber++;
+    print(loopBreakNumber);
+    if (loopBreakNumber > 10) {
+      // 10回以上ループしてたら無限ループの危険。強制終了
+      return imageName;
+    }
   }
 }
