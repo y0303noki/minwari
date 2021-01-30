@@ -13,7 +13,6 @@ class SwitchButtonService {
   }
 
   String getSwitchType() {
-    print('get:${this._switchType}');
     return this._switchType;
   }
 

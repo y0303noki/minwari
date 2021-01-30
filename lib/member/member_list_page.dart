@@ -35,9 +35,7 @@ class MemberListPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    model.selectedTrip == null
-                        ? '読み込み中...'
-                        : model.selectedTrip.name,
+                    model.selectedTrip == null ? '' : model.selectedTrip.name,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -64,7 +62,7 @@ class MemberListPage extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('メンバーリストは5個までしか作成できません。不要なメンバーを削除してください。'),
+                        title: Text('これ以上追加できません。'),
                         actions: [
                           FlatButton(
                             child: Text('OK'),
@@ -205,7 +203,7 @@ List<Widget> _setMembers(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(Icons.note),
-                            Text(member.memo),
+                            Text(member.memo ?? ''),
                           ],
                         ),
                       ),

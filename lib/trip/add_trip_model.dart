@@ -22,6 +22,8 @@ class AddUpdateTripModel extends ChangeNotifier {
         memo: null,
         isSelected: true,
         createdAt: now,
+        eventAt: now,
+        eventEndAt: now,
         updatedAt: now);
     List<Trip> trips = [];
     trips.add(sampleTrip);
@@ -64,7 +66,18 @@ class AddUpdateTripModel extends ChangeNotifier {
       throw ('タイトルを入力してください。');
     }
     if (trip.eventAt == null || trip.eventAt == '') {
-      throw ('開催日を選択してください。');
+      throw ('出発日を選択してください。');
+    }
+    if (trip.eventEndAt == null || trip.eventEndAt == '') {
+      throw ('帰宅日を選択してください。');
+    }
+    if (trip.name.length > 10) {
+      throw ('タイトルは10文字未満にしてください。');
+    }
+    DateTime startTime = DateTime.parse(trip.eventAt);
+    DateTime endTime = DateTime.parse(trip.eventEndAt);
+    if (startTime.isAfter(endTime)) {
+      throw ('帰宅日は出発日と同じ日付か、それ以降の日付にしてください。');
     }
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -87,6 +100,24 @@ class AddUpdateTripModel extends ChangeNotifier {
   }
 
   Future updateTrip(Trip updatedTrip) async {
+    if (updatedTrip.name == null || updatedTrip.name.length <= 0) {
+      throw ('タイトルを入力してください。');
+    }
+    if (updatedTrip.eventAt == null || updatedTrip.eventAt == '') {
+      throw ('出発日を選択してください。');
+    }
+    if (updatedTrip.eventEndAt == null || updatedTrip.eventEndAt == '') {
+      throw ('帰宅日を選択してください。');
+    }
+    if (updatedTrip.name.length > 10) {
+      throw ('タイトルは10文字未満にしてください。');
+    }
+    DateTime startTime = DateTime.parse(updatedTrip.eventAt);
+    DateTime endTime = DateTime.parse(updatedTrip.eventEndAt);
+    if (startTime.isAfter(endTime)) {
+      throw ('帰宅日は出発日と同じ日付か、それ以降の日付にしてください。');
+    }
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'trips';
     var tripsData = prefs.getString(key);
@@ -193,6 +224,13 @@ class AddUpdateTripModel extends ChangeNotifier {
   String eventDate;
   setEventDate(String pickDate) {
     eventDate = pickDate;
+    notifyListeners();
+  }
+
+  // イベント終了日付
+  String eventEndDate;
+  setEventEndDate(String pickDate) {
+    eventEndDate = pickDate;
     notifyListeners();
   }
 }

@@ -8,6 +8,7 @@ class Item {
   String memberId;
   String memo;
   bool isPaid;
+  List<String> checkMemberList;
   final String createdAt;
   String updatedAt;
 
@@ -19,6 +20,7 @@ class Item {
       this.memberId,
       this.memo,
       this.isPaid,
+      this.checkMemberList,
       this.createdAt,
       this.updatedAt});
 
@@ -31,6 +33,9 @@ class Item {
       memberId: jsonData['memberId'],
       memo: jsonData['memo'],
       isPaid: jsonData['isPaid'],
+      checkMemberList: jsonData['checkMemberList'] == null
+          ? jsonData['checkMemberList']
+          : jsonData['checkMemberList'].cast<String>() as List<String>,
       createdAt: jsonData['createdAt'],
       updatedAt: jsonData['updatedAt'],
     );
@@ -44,6 +49,7 @@ class Item {
         'memberId': item.memberId,
         'memo': item.memo,
         'isPaid': item.isPaid,
+        'checkMemberList': item.checkMemberList,
         'createdAt': item.createdAt,
         'updatedAt': item.updatedAt,
       };

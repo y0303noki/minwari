@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    selectedTrip == null ? '読み込み中...' : selectedTrip.name,
+                    selectedTrip == null ? '' : selectedTrip.name,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -149,7 +149,6 @@ class HomePage extends StatelessWidget {
                       fullscreenDialog: true),
                 ).then((value) async {
                   // ここで画面遷移から戻ってきたことを検知できる
-                  print('モドてきた');
                   switchButtonService.setSwitchType(SwitchType.UN_PAID);
                   model.getItems(SwitchType.UN_PAID);
                 });
@@ -309,80 +308,8 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
         ),
         trailing: Text('${item.money.toString()}円'),
         onTap: () async {
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return SimpleDialog(
-                title: Text(item.title),
-                children: [
-                  // コンテンツ領域
-                  SimpleDialogOption(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.person),
-                        Text(
-                          member != null ? member.name : 'メンバーが削除されています',
-                          style: member != null
-                              ? null
-                              : TextStyle(
-                                  color: Colors.red,
-                                ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SimpleDialogOption(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.attach_money),
-                        Text('${item.money.toString()}円'),
-                      ],
-                    ),
-                  ),
-                  SimpleDialogOption(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(null),
-                        Text(
-                            '${item.money} / ${members.length} = ${(item.money / members.length).ceil()}(円/人)'),
-                      ],
-                    ),
-                  ),
-                  SimpleDialogOption(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.note),
-                        Text(item.memo),
-                      ],
-                    ),
-                  ),
-                  RaisedButton(
-                      child: Text('編集画面へ'),
-                      onPressed: () async {
-                        List<Member> members =
-                            await AddUpdateMemberModel().getMembers();
-                        // アイテム追加ダイアログ呼び出し
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddItemPage(members, item),
-                              fullscreenDialog: false),
-                        ).then((value) async {
-                          // ここで画面遷移から戻ってきたことを検知できる
-                          String switchType =
-                              switchButtonService.getSwitchType();
-                          model.getItems(switchType);
-                          Navigator.of(context).pop();
-                        });
-                      })
-                ],
-              );
-            },
-          );
+          // 外だし実験中
+          await _showItemDetail(context, item, member, members, model);
         },
         onLongPress: () async {
           List<Member> members = await AddUpdateMemberModel().getMembers();
@@ -430,4 +357,135 @@ Widget dropDownList(BuildContext context, AddUpdateItemModel model) {
       );
     }).toList(),
   );
+}
+
+_showItemDetail(BuildContext context, Item item, Member member,
+    List<Member> members, AddUpdateItemModel model) async {
+  SwitchButtonService switchButtonService = SwitchButtonService();
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      final width = MediaQuery.of(context).size.width;
+      return Container(
+        child: SimpleDialog(
+          title: Text(item.title),
+          children: [
+            // コンテンツ領域
+            Container(
+              width: width,
+              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(Icons.person),
+                  Text(
+                    member != null ? member.name : 'メンバーが削除されています',
+                    style: member != null
+                        ? null
+                        : TextStyle(
+                            color: Colors.red,
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(Icons.attach_money),
+                  Text('${item.money.toString()}円'),
+                ],
+              ),
+            ),
+// TODO:割り勘金額一旦消す
+//          SimpleDialogOption(
+//            child: Row(
+//              mainAxisAlignment: MainAxisAlignment.start,
+//              children: [
+//                Icon(null),
+//                Text(
+//                    '${item.money} / ${members.length} = ${(item.money / members.length).ceil()}(円/人)'),
+//              ],
+//            ),
+//          ),
+
+            Column(
+                children: _makeCheckBoxWidget(context, item, members, model)),
+
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: Wrap(
+                spacing: 5.0,
+                runSpacing: 5.0,
+//              mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(Icons.note),
+                  Text(item.memo ?? ''),
+                ],
+              ),
+            ),
+            RaisedButton(
+                child: Text('編集'),
+                onPressed: () async {
+                  List<Member> members =
+                      await AddUpdateMemberModel().getMembers();
+                  // アイテム追加ダイアログ呼び出し
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddItemPage(members, item),
+                        fullscreenDialog: false),
+                  ).then((value) async {
+                    // ここで画面遷移から戻ってきたことを検知できる
+                    String switchType = switchButtonService.getSwitchType();
+                    model.getItems(switchType);
+                    Navigator.of(context).pop();
+                  });
+                })
+          ],
+        ),
+      );
+    },
+  );
+}
+
+List<Widget> _makeCheckBoxWidget(BuildContext context, Item item,
+    List<Member> members, AddUpdateItemModel model) {
+  List<String> checkList =
+      item.checkMemberList == null ? [] : item.checkMemberList;
+  List<Widget> checkBoxWidget = new List<Widget>();
+  for (var i = 0; i < members.length; i++) {
+    String checkMemberId = checkList
+        .firstWhere((check) => check == members[i].id, orElse: () => null);
+    bool isCheck = checkMemberId != null;
+    checkBoxWidget.add(Row(
+      children: [
+        Checkbox(
+          activeColor: Colors.blue,
+          value: isCheck,
+          onChanged: (value) {
+            if (value) {
+              checkList.add(members[i].id);
+            } else {
+              if (checkMemberId != null) {
+                checkList.removeWhere((check) => check == checkMemberId);
+              }
+            }
+            isCheck = value;
+            item.checkMemberList = checkList;
+            model.updateItem(item);
+            Navigator.of(context).pop();
+            Member itemMember = members.firstWhere(
+                (element) => element.id == item.memberId,
+                orElse: () => null);
+            _showItemDetail(context, item, itemMember, members, model);
+          },
+        ),
+        Text(members[i].name),
+      ],
+    ));
+  }
+  return checkBoxWidget;
 }
