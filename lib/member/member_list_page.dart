@@ -62,7 +62,7 @@ class MemberListPage extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('メンバーリストは5個までしか作成できません。不要なメンバーを削除してください。'),
+                        title: Text('これ以上追加できません。'),
                         actions: [
                           FlatButton(
                             child: Text('OK'),

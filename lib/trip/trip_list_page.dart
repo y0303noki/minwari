@@ -68,12 +68,12 @@ class TripListPage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                if (false) {
+                if (tripList.length >= 5) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('旅リストは5個までしか作成できません。不要な旅を削除してください。'),
+                        title: Text('これ以上追加できません。'),
                         actions: [
                           FlatButton(
                             child: Text('OK'),
