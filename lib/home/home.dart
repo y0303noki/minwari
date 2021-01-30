@@ -365,12 +365,15 @@ _showItemDetail(BuildContext context, Item item, Member member,
   await showDialog(
     context: context,
     builder: (BuildContext context) {
+      final width = MediaQuery.of(context).size.width;
       return Container(
         child: SimpleDialog(
           title: Text(item.title),
           children: [
             // コンテンツ領域
-            SimpleDialogOption(
+            Container(
+              width: width,
+              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -386,7 +389,8 @@ _showItemDetail(BuildContext context, Item item, Member member,
                 ],
               ),
             ),
-            SimpleDialogOption(
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -410,7 +414,8 @@ _showItemDetail(BuildContext context, Item item, Member member,
             Column(
                 children: _makeCheckBoxWidget(context, item, members, model)),
 
-            SimpleDialogOption(
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Wrap(
                 spacing: 5.0,
                 runSpacing: 5.0,
@@ -422,7 +427,7 @@ _showItemDetail(BuildContext context, Item item, Member member,
               ),
             ),
             RaisedButton(
-                child: Text('編集画面へ'),
+                child: Text('編集'),
                 onPressed: () async {
                   List<Member> members =
                       await AddUpdateMemberModel().getMembers();
