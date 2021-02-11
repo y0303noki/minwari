@@ -16,14 +16,16 @@ class Footer extends StatelessWidget {
       footerType = 'Home';
     }
     return BottomNavigationBar(
+//      backgroundColor: Colors.green.withOpacity(0.3),
       fixedColor: Colors.grey,
       items: [
         BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: footerType == 'Home' ? Colors.blue : Colors.grey,
-            ),
-            label: 'Home'),
+          icon: Icon(
+            Icons.home,
+            color: footerType == 'Home' ? Colors.blue : Colors.grey,
+          ),
+          label: 'Home',
+        ),
         BottomNavigationBarItem(
           icon: Icon(
             Icons.person,
@@ -41,6 +43,7 @@ class Footer extends StatelessWidget {
       ],
       currentIndex: _selectedIndex,
       onTap: (int index) {
+        _selectedIndex = index;
         if (index == 0) {
           this.footerNavigationService.setFooterType('Home');
           Navigator.pushReplacement(

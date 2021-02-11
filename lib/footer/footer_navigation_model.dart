@@ -5,6 +5,7 @@ class FooterNavigationService {
       FooterNavigationService._internal();
 
   String _footerType;
+  int _currentIndex = 0;
 
   FooterNavigationService._internal();
 
@@ -21,5 +22,6 @@ class FooterNavigationService {
 
   void setFooterType(String footerType) {
     this._footerType = footerType;
+    this._currentIndex = 1;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/footer/footer.dart';
+import 'package:trip_money_local/footer/trip_footer.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/add_member_page.dart';
 
@@ -24,24 +25,20 @@ class MemberListPage extends StatelessWidget {
             appBar: AppBar(
               actions: [],
               title: Text(
-                'メンバーリスト',
+                'Member',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
               backgroundColor: Colors.black87,
-              centerTitle: true,
+              centerTitle: false,
               elevation: 0.0,
             ),
             body: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    model.selectedTrip == null ? '' : model.selectedTrip.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  ),
+                  padding: EdgeInsets.all(10.0),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,43 +49,47 @@ class MemberListPage extends StatelessWidget {
                   child: ListView(
                     children: listTiles,
                   ),
-                )
+                ),
+                TripFooter(model.selectedTrip),
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                if (listTiles.length >= 11) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('これ以上追加できません。'),
-                        actions: [
-                          FlatButton(
-                            child: Text('OK'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddMemberPage(null),
-                        fullscreenDialog: true),
-                  ).then((value) {
-                    // ここで画面遷移から戻ってきたことを検知できる
-                    print('モドてきたメンバ');
-                    model.getMembers();
-                  });
-                }
-              },
-              child: Icon(Icons.person_add),
-              backgroundColor: Colors.green,
+            floatingActionButton: Container(
+              margin: EdgeInsets.only(bottom: 70.0),
+              child: FloatingActionButton(
+                onPressed: () {
+                  if (listTiles.length >= 11) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('これ以上追加できません。'),
+                          actions: [
+                            FlatButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddMemberPage(null),
+                          fullscreenDialog: true),
+                    ).then((value) {
+                      // ここで画面遷移から戻ってきたことを検知できる
+                      print('モドてきたメンバ');
+                      model.getMembers();
+                    });
+                  }
+                },
+                child: Icon(Icons.person_add),
+                backgroundColor: Colors.green,
+              ),
             ),
             bottomNavigationBar: Footer(),
           );

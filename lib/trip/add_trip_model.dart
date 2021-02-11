@@ -15,7 +15,8 @@ class AddUpdateTripModel extends ChangeNotifier {
 
   Future createSampleTrip() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String now = DateTime.now().toString();
+    final DateTime nowDate = DateTime.now();
+    final String now = '${nowDate.year}-12-31';
     Trip sampleTrip = Trip(
         id: Uuid().v1(),
         name: 'サンプル旅',

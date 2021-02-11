@@ -8,6 +8,7 @@ import 'package:trip_money_local/domain/db_table/member.dart';
 import 'package:trip_money_local/domain/db_table/switchType.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/footer/footer.dart';
+import 'package:trip_money_local/footer/trip_footer.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/member_list_page.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';
@@ -46,41 +47,34 @@ class HomePage extends StatelessWidget {
 
           return Scaffold(
             appBar: AppBar(
-              actions: [
-                IconButton(icon: Icon(Icons.settings), onPressed: () async {}),
-              ],
+              centerTitle: false,
+// そのうち設定アイコンに機能を持たせる
+//              actions: [
+//                IconButton(icon: Icon(Icons.settings), onPressed: () async {}),
+//              ],
               title: Text(
-                'ホーム',
+                'Home',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
               backgroundColor: Colors.black87,
-              centerTitle: true,
               elevation: 0.0,
             ),
             body: Column(
               children: [
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    selectedTrip == null ? '' : selectedTrip.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: RaisedButton(
-                          child: const Text('未精算'),
+                          child: const Text('TODO'),
                           color: this.switchType == SwitchType.UN_PAID
                               ? Colors.white70
                               : Colors.white,
                           shape: Border(
                             bottom: BorderSide(color: Colors.orange),
-                            right: BorderSide(color: Colors.grey),
                           ),
                           onPressed: () {
                             switchButtonService
@@ -91,13 +85,12 @@ class HomePage extends StatelessWidget {
                       ),
                       Expanded(
                         child: RaisedButton(
-                          child: const Text('精算済み'),
+                          child: const Text('DONE'),
                           color: this.switchType == SwitchType.PAID
                               ? Colors.white70
                               : Colors.white,
                           shape: Border(
                             bottom: BorderSide(color: Colors.green),
-                            right: BorderSide(color: Colors.grey),
                           ),
                           onPressed: () {
                             switchButtonService.setSwitchType(SwitchType.PAID);
@@ -107,7 +100,7 @@ class HomePage extends StatelessWidget {
                       ),
                       Expanded(
                         child: RaisedButton(
-                          child: const Text('全て'),
+                          child: const Text('ALL'),
                           color: this.switchType == SwitchType.All
                               ? Colors.white70
                               : Colors.white,
@@ -134,27 +127,31 @@ class HomePage extends StatelessWidget {
                       children: listTiles,
                     ),
                   ),
-                )
+                ),
+                TripFooter(selectedTrip),
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                List<Member> members =
-                    await AddUpdateMemberModel().getMembers();
-                // アイテム追加ダイアログ呼び出し
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddItemPage(members, null),
-                      fullscreenDialog: true),
-                ).then((value) async {
-                  // ここで画面遷移から戻ってきたことを検知できる
-                  switchButtonService.setSwitchType(SwitchType.UN_PAID);
-                  model.getItems(SwitchType.UN_PAID);
-                });
-              },
-              child: Icon(Icons.add),
-              backgroundColor: Colors.green,
+            floatingActionButton: Container(
+              margin: EdgeInsets.only(bottom: 70.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  List<Member> members =
+                      await AddUpdateMemberModel().getMembers();
+                  // アイテム追加ダイアログ呼び出し
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddItemPage(members, null),
+                        fullscreenDialog: true),
+                  ).then((value) async {
+                    // ここで画面遷移から戻ってきたことを検知できる
+                    switchButtonService.setSwitchType(SwitchType.UN_PAID);
+                    model.getItems(SwitchType.UN_PAID);
+                  });
+                },
+                child: Icon(Icons.add),
+                backgroundColor: Colors.green,
+              ),
             ),
             bottomNavigationBar: Footer(),
 

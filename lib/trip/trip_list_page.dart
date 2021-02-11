@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:trip_money_local/domain/db_table/trip.dart';
 import 'package:trip_money_local/footer/footer.dart';
 import 'package:trip_money_local/footer/footer_navigation_model.dart';
+import 'package:trip_money_local/footer/trip_footer.dart';
 import 'package:trip_money_local/home/home.dart';
 import 'package:trip_money_local/trip/add_trip_model.dart';
 import 'package:trip_money_local/trip/add_trip_page.dart';
@@ -35,26 +36,20 @@ class TripListPage extends StatelessWidget {
             appBar: AppBar(
               actions: [],
               title: Text(
-                '旅リスト',
+                'Trip',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
               backgroundColor: Colors.black87,
-              centerTitle: true,
+              centerTitle: false,
               elevation: 0.0,
             ),
             body: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    model.selectedTripFromTrip == null
-                        ? '読み込み中...'
-                        : model.selectedTripFromTrip.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  ),
+                  padding: EdgeInsets.all(10.0),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,43 +58,47 @@ class TripListPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: listTiles ?? Container(),
-                )
+                ),
+                TripFooter(model.selectedTripFromTrip),
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                if (tripList.length >= 5) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('これ以上追加できません。'),
-                        actions: [
-                          FlatButton(
-                            child: Text('OK'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                } else {
-                  // アイテム追加ダイアログ呼び出し
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddTripPage(null),
-                        fullscreenDialog: true),
-                  ).then((value) {
-                    // ここで画面遷移から戻ってきたことを検知できる
-                    model.getTrips();
-                  });
-                }
-              },
-              child: Icon(Icons.add_box),
-              backgroundColor: Colors.green,
+            floatingActionButton: Container(
+              margin: EdgeInsets.only(bottom: 70.0),
+              child: FloatingActionButton(
+                onPressed: () {
+                  if (tripList.length >= 5) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('これ以上追加できません。'),
+                          actions: [
+                            FlatButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    // アイテム追加ダイアログ呼び出し
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddTripPage(null),
+                          fullscreenDialog: true),
+                    ).then((value) {
+                      // ここで画面遷移から戻ってきたことを検知できる
+                      model.getTrips();
+                    });
+                  }
+                },
+                child: Icon(Icons.add_box),
+                backgroundColor: Colors.green,
+              ),
             ),
             bottomNavigationBar: Footer(),
           );
