@@ -18,6 +18,8 @@ class TripListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: ChangeNotifierProvider<AddUpdateTripModel>(
         create: (_) => AddUpdateTripModel()
           ..getTrips().then((value) =>

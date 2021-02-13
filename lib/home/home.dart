@@ -23,6 +23,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: ChangeNotifierProvider<AddUpdateItemModel>(
         create: (_) => AddUpdateItemModel()..getItems(SwitchType.UN_PAID),
         child: Consumer<AddUpdateItemModel>(
@@ -60,61 +62,87 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               backgroundColor: Colors.black87,
-              elevation: 0.0,
             ),
             body: Column(
               children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: RaisedButton(
-                          child: const Text('TODO'),
-                          color: this.switchType == SwitchType.UN_PAID
-                              ? Colors.white70
-                              : Colors.white,
-                          shape: Border(
-                            bottom: BorderSide(color: Colors.orange),
+                Container(
+                  color: Colors.black87,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: FlatButton(
+                            height: 50,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0))),
+                            child: const Text('TODO'),
+                            color: this.switchType == SwitchType.UN_PAID
+                                ? Theme.of(context).scaffoldBackgroundColor
+                                : Colors.grey[600],
+//                          shape: Border(
+//                            bottom: BorderSide(color: Colors.orange),
+//                          ),
+                            onPressed: () {
+                              switchButtonService
+                                  .setSwitchType(SwitchType.UN_PAID);
+                              model.getItems(SwitchType.UN_PAID);
+                            },
                           ),
-                          onPressed: () {
-                            switchButtonService
-                                .setSwitchType(SwitchType.UN_PAID);
-                            model.getItems(SwitchType.UN_PAID);
-                          },
                         ),
-                      ),
-                      Expanded(
-                        child: RaisedButton(
-                          child: const Text('DONE'),
-                          color: this.switchType == SwitchType.PAID
-                              ? Colors.white70
-                              : Colors.white,
-                          shape: Border(
-                            bottom: BorderSide(color: Colors.green),
+                        Container(
+                          color: Colors.black87,
+                          height: 50,
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: FlatButton(
+                            height: 50,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0))),
+
+                            child: const Text('DONE'),
+                            color: this.switchType == SwitchType.PAID
+                                ? Theme.of(context).scaffoldBackgroundColor
+                                : Colors.grey[600],
+//                          shape: Border(
+//                            bottom: BorderSide(color: Colors.green),
+//                          ),
+                            onPressed: () {
+                              switchButtonService
+                                  .setSwitchType(SwitchType.PAID);
+                              model.getItems(SwitchType.PAID);
+                            },
                           ),
-                          onPressed: () {
-                            switchButtonService.setSwitchType(SwitchType.PAID);
-                            model.getItems(SwitchType.PAID);
-                          },
                         ),
-                      ),
-                      Expanded(
-                        child: RaisedButton(
-                          child: const Text('ALL'),
-                          color: this.switchType == SwitchType.All
-                              ? Colors.white70
-                              : Colors.white,
-                          shape: Border(
-                            bottom: BorderSide(color: Colors.black),
+                        Container(
+                          color: Colors.black87,
+                          height: 50,
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: FlatButton(
+                            height: 50,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0))),
+                            child: const Text('ALL'),
+                            color: this.switchType == SwitchType.All
+                                ? Theme.of(context).scaffoldBackgroundColor
+                                : Colors.grey[600],
+                            onPressed: () {
+                              switchType = SwitchType.All;
+                              switchButtonService.setSwitchType(SwitchType.All);
+                              model.getItems(SwitchType.All);
+                            },
                           ),
-                          onPressed: () {
-                            switchType = SwitchType.All;
-                            switchButtonService.setSwitchType(SwitchType.All);
-                            model.getItems(SwitchType.All);
-                          },
                         ),
-                      ),
-                    ]),
+                      ]),
+                ),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -339,10 +367,9 @@ Widget dropDownList(BuildContext context, AddUpdateItemModel model) {
     icon: Icon(Icons.arrow_downward),
     iconSize: 24,
     elevation: 16,
-    style: TextStyle(color: Colors.black),
+    style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
     underline: Container(
-      height: 2,
-      color: Colors.grey,
+      height: 0,
     ),
     onChanged: (String newValue) {
       model.setOrderItem(newValue);

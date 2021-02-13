@@ -146,6 +146,7 @@ Future addItem(AddUpdateItemModel model, BuildContext context) async {
         createdAt: now,
         updatedAt: now);
     await model.addItem(newItem);
+
 //    await showDialog(
 //      context: context,
 //      builder: (BuildContext context) {

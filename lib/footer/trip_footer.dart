@@ -43,7 +43,10 @@ class TripFooter extends StatelessWidget {
           /*3*/
           Icon(
             Icons.calendar_today,
-            color: Colors.red,
+            color: Colors.white,
+          ),
+          Container(
+            width: 10,
           ),
           Text(
             '$eventAtMonth/$eventAtDate',

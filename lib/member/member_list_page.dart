@@ -12,6 +12,8 @@ class MemberListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: ChangeNotifierProvider<AddUpdateMemberModel>(
         create: (_) => AddUpdateMemberModel()..getMembers(),
         child: Consumer<AddUpdateMemberModel>(
@@ -188,7 +190,7 @@ List<Widget> _setMembers(
           ),
 
           child: ListTile(
-            leading: Icon(Icons.person),
+            leading: Icon(Icons.person_outline_rounded),
             title: Text(member.name),
             onTap: () async {
               // タップして詳細表示
