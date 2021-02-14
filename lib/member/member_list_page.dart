@@ -193,44 +193,77 @@ List<Widget> _setMembers(
             leading: Icon(Icons.person_outline_rounded),
             title: Text(member.name),
             onTap: () async {
-              // タップして詳細表示
-              await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return SimpleDialog(
-                    title: Text(member.name),
-                    children: [
-                      // コンテンツ領域
-                      SimpleDialogOption(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+              if (member.memo == '' || member.memo == null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddMemberPage(member),
+                      fullscreenDialog: true),
+                ).then((value) {
+                  // ここで画面遷移から戻ってきたことを検知できる
+                  model.getMembers();
+                });
+              } else {
+                // タップして詳細表示
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SimpleDialog(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.note),
-                            Text(member.memo ?? ''),
+                            Container(
+                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                child: Text(
+                                  member.name,
+                                  style: TextStyle(fontSize: 25),
+                                )),
+                            Stack(
+                              children: [
+                                Icon(
+                                  Icons.circle,
+                                  size: 50,
+                                  color:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                ),
+                                Container(
+                                  child: IconButton(
+                                    icon: Icon(Icons.edit_rounded),
+                                    onPressed: () async {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddMemberPage(member),
+                                            fullscreenDialog: false),
+                                      ).then((value) async {
+                                        // ここで画面遷移から戻ってきたことを検知できる
+                                        model.getMembers();
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                      ),
-                      RaisedButton(
-                          child: Text('編集画面へ'),
-                          onPressed: () async {
-                            List<Member> members =
-                                await AddUpdateMemberModel().getMembers();
-                            // アイテム追加ダイアログ呼び出し
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddMemberPage(member),
-                                  fullscreenDialog: false),
-                            ).then((value) async {
-                              // ここで画面遷移から戻ってきたことを検知できる
-                              model.getMembers();
-                              Navigator.of(context).pop();
-                            });
-                          })
-                    ],
-                  );
-                },
-              );
+                        // コンテンツ領域
+                        SimpleDialogOption(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(Icons.note),
+                              Text(member.memo ?? ''),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             },
             onLongPress: () async {
               Navigator.push(

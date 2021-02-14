@@ -392,8 +392,71 @@ _showItemDetail(BuildContext context, Item item, Member member,
       final width = MediaQuery.of(context).size.width;
       return Container(
         child: SimpleDialog(
-          title: Text(item.title),
+//          title: Text(item.title),
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text(
+                      item.title,
+                      style: TextStyle(fontSize: 25),
+                    )),
+                Stack(
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      size: 50,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                    Container(
+                      child: IconButton(
+                        icon: Icon(Icons.edit_rounded),
+                        onPressed: () async {
+                          List<Member> members =
+                              await AddUpdateMemberModel().getMembers();
+                          // アイテム追加ダイアログ呼び出し
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AddItemPage(members, item),
+                                fullscreenDialog: false),
+                          ).then((value) async {
+                            // ここで画面遷移から戻ってきたことを検知できる
+                            String switchType =
+                                switchButtonService.getSwitchType();
+                            model.getItems(switchType);
+                            Navigator.of(context).pop();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+//              child: FlatButton(
+//                  child: Text('編集'),
+//                  onPressed: () async {
+//                    List<Member> members =
+//                        await AddUpdateMemberModel().getMembers();
+//                    // アイテム追加ダイアログ呼び出し
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                          builder: (context) => AddItemPage(members, item),
+//                          fullscreenDialog: false),
+//                    ).then((value) async {
+//                      // ここで画面遷移から戻ってきたことを検知できる
+//                      String switchType = switchButtonService.getSwitchType();
+//                      model.getItems(switchType);
+//                      Navigator.of(context).pop();
+//                    });
+//                  }),
+
             // コンテンツ領域
             Container(
               width: width,
@@ -402,6 +465,9 @@ _showItemDetail(BuildContext context, Item item, Member member,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Icon(Icons.person),
+                  Container(
+                    width: 10,
+                  ),
                   Text(
                     member != null ? member.name : 'メンバーが削除されています',
                     style: member != null
@@ -418,7 +484,10 @@ _showItemDetail(BuildContext context, Item item, Member member,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(Icons.attach_money),
+                  Icon(Icons.money),
+                  Container(
+                    width: 10,
+                  ),
                   Text('${item.money.toString()}円'),
                 ],
               ),
@@ -438,36 +507,23 @@ _showItemDetail(BuildContext context, Item item, Member member,
             Column(
                 children: _makeCheckBoxWidget(context, item, members, model)),
 
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: Wrap(
-                spacing: 5.0,
-                runSpacing: 5.0,
+            item.memo != ''
+                ? Container(
+                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                    child: Wrap(
+                      spacing: 5.0,
+                      runSpacing: 5.0,
 //              mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(Icons.note),
-                  Text(item.memo ?? ''),
-                ],
-              ),
-            ),
-            RaisedButton(
-                child: Text('編集'),
-                onPressed: () async {
-                  List<Member> members =
-                      await AddUpdateMemberModel().getMembers();
-                  // アイテム追加ダイアログ呼び出し
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddItemPage(members, item),
-                        fullscreenDialog: false),
-                  ).then((value) async {
-                    // ここで画面遷移から戻ってきたことを検知できる
-                    String switchType = switchButtonService.getSwitchType();
-                    model.getItems(switchType);
-                    Navigator.of(context).pop();
-                  });
-                })
+                      children: [
+                        Icon(Icons.note),
+                        Container(
+                          width: 10,
+                        ),
+                        Text(item.memo ?? ''),
+                      ],
+                    ),
+                  )
+                : Container(),
           ],
         ),
       );

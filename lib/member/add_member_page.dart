@@ -25,6 +25,8 @@ class AddMemberPage extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: ChangeNotifierProvider<AddUpdateMemberModel>(
         create: (_) => AddUpdateMemberModel(),
         child: Consumer<AddUpdateMemberModel>(
@@ -48,7 +50,7 @@ class AddMemberPage extends StatelessWidget {
               ),
               actions: [],
               title: Text(
-                'ホーム',
+                '',
               ),
               backgroundColor: Colors.black87,
               centerTitle: true,

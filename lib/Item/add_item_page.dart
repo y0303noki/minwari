@@ -39,6 +39,8 @@ class AddItemPage extends StatelessWidget {
     }
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: ChangeNotifierProvider<AddUpdateItemModel>(
         create: (_) => AddUpdateItemModel(),
         child: Consumer<AddUpdateItemModel>(
@@ -63,7 +65,7 @@ class AddItemPage extends StatelessWidget {
               ),
               actions: [],
               title: Text(
-                'ホーム',
+                '',
               ),
               backgroundColor: Colors.black87,
               centerTitle: true,

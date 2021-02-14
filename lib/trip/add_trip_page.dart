@@ -37,6 +37,8 @@ class AddTripPage extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false, // <- Debug の 表示を OFF
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: ChangeNotifierProvider<AddUpdateTripModel>(
         create: (_) => AddUpdateTripModel(),
         child: Consumer<AddUpdateTripModel>(
@@ -60,7 +62,7 @@ class AddTripPage extends StatelessWidget {
               ),
               actions: [],
               title: Text(
-                'ホーム',
+                '',
               ),
               backgroundColor: Colors.black87,
               centerTitle: true,
@@ -165,7 +167,10 @@ class AddTripPage extends StatelessWidget {
                     // 編集モードのの時だけ削除ボタンを表示する
                     visible: isUpdate,
                     child: RaisedButton(
-                        child: Text('削除する'),
+                        color: Colors.red,
+                        child: Text(
+                          '削除する',
+                        ),
                         onPressed: () async {
                           return await showDialog(
                             context: context,

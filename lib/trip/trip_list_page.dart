@@ -131,7 +131,6 @@ class TripListPage extends StatelessWidget {
   // gridの中身作成
   List<Widget> _getTiles(AddUpdateTripModel model, BuildContext context) {
     final List<Widget> tiles = <Widget>[];
-    var assetsImage = 'images/tripImage0.jpg';
     for (int i = 0; i < this.tripList.length; i++) {
       Trip selectedTrip = this.tripList[i];
       tiles.add(
@@ -197,10 +196,15 @@ class TripListPage extends StatelessWidget {
                         SizedBox(height: 5),
                         Text(
                           selectedTrip.eventAt,
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
                         ),
-//                        Text('~'),
                         Text(
                           selectedTrip.eventEndAt,
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
                         ),
                       ],
                     ),
