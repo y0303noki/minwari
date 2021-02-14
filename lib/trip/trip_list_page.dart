@@ -123,13 +123,13 @@ class TripListPage extends StatelessWidget {
       mainAxisSpacing: 10.0, // 横
       childAspectRatio: 0.7, // 高さ
       shrinkWrap: true,
-      children: _getTiles(model),
+      children: _getTiles(model, context),
     );
     return listTrips;
   }
 
   // gridの中身作成
-  List<Widget> _getTiles(AddUpdateTripModel model) {
+  List<Widget> _getTiles(AddUpdateTripModel model, BuildContext context) {
     final List<Widget> tiles = <Widget>[];
     var assetsImage = 'images/tripImage0.jpg';
     for (int i = 0; i < this.tripList.length; i++) {
@@ -145,7 +145,7 @@ class TripListPage extends StatelessWidget {
                 : Border.all(
                     color: Colors.grey,
                   ),
-            borderRadius: BorderRadius.circular(1),
+            borderRadius: BorderRadius.circular(10),
           ),
           child: GridTile(
             child: InkResponse(
@@ -171,7 +171,7 @@ class TripListPage extends StatelessWidget {
                     Icon(
                       Icons.circle,
                       size: 50,
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     IconButton(
                       icon: Icon(Icons.edit_rounded),
@@ -181,6 +181,9 @@ class TripListPage extends StatelessWidget {
                     ),
                   ]),
                   Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: Column(
 //                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
