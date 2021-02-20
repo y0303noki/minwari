@@ -140,12 +140,19 @@ class HomePage extends StatelessWidget {
                         ),
                       ]),
                 ),
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: dropDownList(context, model),
-                  )
-                ]),
+// うまく行ってないのでドロップダウンをコメントアウト
+//                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+//                  Padding(
+//                    padding: const EdgeInsets.all(8.0),
+//                    child: dropDownList(context, model),
+//                  )
+//                ]),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(),
+                  ),
+                ),
                 Expanded(
                   child: Container(
                     child: ListView(
