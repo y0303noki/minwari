@@ -166,10 +166,12 @@ class AddTripPage extends StatelessWidget {
                   Visibility(
                     // 編集モードのの時だけ削除ボタンを表示する
                     visible: isUpdate,
-                    child: RaisedButton(
-                        color: Colors.red,
+                    child: TextButton(
+                        style: TextButton.styleFrom(
+                          primary: Colors.red,
+                        ),
                         child: Text(
-                          '削除する',
+                          '削除',
                         ),
                         onPressed: () async {
                           return await showDialog(
@@ -197,7 +199,7 @@ class AddTripPage extends StatelessWidget {
                                     },
                                     child: const Text(
                                       '削除する',
-                                      style: TextStyle(color: Colors.black),
+                                      style: TextStyle(color: Colors.red),
                                     ),
                                   ),
                                   FlatButton(

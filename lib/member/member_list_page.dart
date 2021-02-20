@@ -18,7 +18,6 @@ class MemberListPage extends StatelessWidget {
         create: (_) => AddUpdateMemberModel()..getMembers(),
         child: Consumer<AddUpdateMemberModel>(
             builder: (consumerContext, model, child) {
-          print('member_list_page Consumer');
           if (model.members == null) {
           } else {
             listTiles = _setMembers(model.members, model, context);
@@ -84,7 +83,6 @@ class MemberListPage extends StatelessWidget {
                           fullscreenDialog: true),
                     ).then((value) {
                       // ここで画面遷移から戻ってきたことを検知できる
-                      print('モドてきたメンバ');
                       model.getMembers();
                     });
                   }
@@ -169,12 +167,9 @@ List<Widget> _setMembers(
           onDismissed: (direction) {
             // スワイプ方向がendToStart（画面左から右）の場合の処理
             if (direction == DismissDirection.endToStart) {
-              print(1);
               model.deleteMember(member);
               // スワイプ方向がstartToEnd（画面右から左）の場合の処理
-            } else {
-              print(2);
-            }
+            } else {}
           },
           // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
           background: Container(color: Colors.blue),

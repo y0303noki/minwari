@@ -146,9 +146,7 @@ class AddUpdateTripModel extends ChangeNotifier {
     this.trips = tripsDecoded;
 
     String tripId = await AddUpdateTripModel().getSelectedTripId();
-    if (this.trips == null || this.trips.isEmpty) {
-      print('this.tripsがないです');
-    }
+    if (this.trips == null || this.trips.isEmpty) {}
 
     this.selectedTripFromTrip =
         this.trips.firstWhere((trip) => trip.id == tripId, orElse: () => null);

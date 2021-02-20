@@ -45,7 +45,6 @@ class AddItemPage extends StatelessWidget {
         create: (_) => AddUpdateItemModel(),
         child: Consumer<AddUpdateItemModel>(
             builder: (consumerContext, model, child) {
-          print('itam_page Consumer');
           return Scaffold(
             appBar: AppBar(
               leading: Padding(

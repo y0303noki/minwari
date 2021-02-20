@@ -125,14 +125,11 @@ class AddUpdateItemModel extends ChangeNotifier {
 //    itemsDecoded.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
     if (switchType == SwitchType.All) {
-      print('全部');
     } else if (switchType == SwitchType.UN_PAID) {
       itemsDecoded = itemsDecoded.where((item) => !item.isPaid).toList();
     } else if (switchType == SwitchType.PAID) {
       itemsDecoded = itemsDecoded.where((item) => item.isPaid).toList();
-    } else {
-      print('定義してない');
-    }
+    } else {}
 
     this.items = itemsDecoded;
 
@@ -159,7 +156,6 @@ class AddUpdateItemModel extends ChangeNotifier {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Trip> trips = await AddUpdateTripModel().getTrips();
     for (var value in trips) {
-      print('tripId:${value.id}');
       final key = 'items_${value.id}';
       prefs.remove(key);
     }
