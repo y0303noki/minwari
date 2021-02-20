@@ -227,9 +227,9 @@ class AddUpdateItemModel extends ChangeNotifier {
     }
 
     if (orderType == '新しい順') {
-      this.items.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
-    } else if (orderType == '古い順') {
       this.items.sort((a, b) => -a.updatedAt.compareTo(b.updatedAt));
+    } else if (orderType == '古い順') {
+      this.items.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
     } else if (orderType == '高い順') {
       this.items.sort((a, b) => -a.money.compareTo(b.money));
     } else if (orderType == '安い順') {

@@ -86,7 +86,7 @@ class TripListPage extends StatelessWidget {
                       },
                     );
                   } else {
-                    // アイテム追加ダイアログ呼び出し
+                    // タスク追加ダイアログ呼び出し
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -121,7 +121,7 @@ class TripListPage extends StatelessWidget {
       crossAxisCount: 2,
       crossAxisSpacing: 10.0, // 縦
       mainAxisSpacing: 10.0, // 横
-      childAspectRatio: 0.7, // 高さ
+      childAspectRatio: 0.8, // 高さ
       shrinkWrap: true,
       children: _getTiles(model, context),
     );
@@ -184,7 +184,7 @@ class TripListPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
-//                      crossAxisAlignment: CrossAxisAlignment.end,
+//                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
                           '${selectedTrip.name}',

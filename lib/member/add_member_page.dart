@@ -60,7 +60,7 @@ class AddMemberPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text(isUpdate ? 'メンバーを編集' : 'メンバー追加'),
+                  Text(isUpdate ? 'メンバーを更新' : 'メンバー追加'),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
@@ -84,8 +84,8 @@ class AddMemberPage extends StatelessWidget {
                     decoration: InputDecoration(labelText: 'メモとか'),
                     controller: memberMemoEditingController,
                   ),
-                  RaisedButton(
-                    child: Text(isUpdate ? '編集する' : '追加する'),
+                  TextButton(
+                    child: Text(isUpdate ? '更新' : '追加'),
                     onPressed: () async {
                       model.name = memberNameEditingController.text;
                       model.memo = memberMemoEditingController.text;

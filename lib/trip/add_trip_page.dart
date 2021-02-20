@@ -72,7 +72,7 @@ class AddTripPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text(isUpdate ? '旅行を編集' : '旅行を追加'),
+                  Text(isUpdate ? '旅行を更新' : '旅行を追加'),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
@@ -148,8 +148,8 @@ class AddTripPage extends StatelessWidget {
                       }
                     },
                   ),
-                  RaisedButton(
-                    child: Text(isUpdate ? '編集する' : '追加する'),
+                  TextButton(
+                    child: Text(isUpdate ? '編集' : '追加'),
                     onPressed: () async {
                       model.name = tripNameEditingController.text;
                       model.memo = tripMemoEditingController.text;

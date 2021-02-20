@@ -75,7 +75,7 @@ class AddItemPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text(!isUpdate ? 'アイテムを追加' : 'アイテムを編集'),
+                  Text(!isUpdate ? 'タスクを追加' : 'タスクを更新'),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
@@ -105,8 +105,8 @@ class AddItemPage extends StatelessWidget {
                     decoration: InputDecoration(labelText: 'メモ'),
                     controller: itemMemoEditingController,
                   ),
-                  RaisedButton(
-                    child: Text(!isUpdate ? '追加する' : '編集する'),
+                  TextButton(
+                    child: Text(!isUpdate ? '追加' : '更新'),
                     onPressed: () async {
                       model.title = itemNameEditingController.text;
 //                      model.member = personEditingController.text;

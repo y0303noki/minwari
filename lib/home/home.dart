@@ -81,9 +81,6 @@ class HomePage extends StatelessWidget {
                             color: this.switchType == SwitchType.UN_PAID
                                 ? Theme.of(context).scaffoldBackgroundColor
                                 : Colors.grey[600],
-//                          shape: Border(
-//                            bottom: BorderSide(color: Colors.orange),
-//                          ),
                             onPressed: () {
                               switchButtonService
                                   .setSwitchType(SwitchType.UN_PAID);
@@ -165,7 +162,7 @@ class HomePage extends StatelessWidget {
                 onPressed: () async {
                   List<Member> members =
                       await AddUpdateMemberModel().getMembers();
-                  // アイテム追加ダイアログ呼び出し
+                  // タスク追加ダイアログ呼び出し
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -182,15 +179,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
             bottomNavigationBar: Footer(),
-
-//            bottomNavigationBar: BottomNavigationBar(
-//              items: bottomList,
-//              currentIndex: _selectedIndex,
-//              selectedItemColor: Colors.amber[800],
-//              onTap: (int index) {
-//                _onItemTapped(index, context);
-//              },
-//            ),
           );
         }),
       ),
@@ -333,12 +321,11 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
         ),
         trailing: Text('${item.money.toString()}円'),
         onTap: () async {
-          // 外だし実験中
           await _showItemDetail(context, item, member, members, model);
         },
         onLongPress: () async {
           List<Member> members = await AddUpdateMemberModel().getMembers();
-          // アイテム追加ダイアログ呼び出し
+          // タスク追加ダイアログ呼び出し
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -346,7 +333,6 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
                 fullscreenDialog: false),
           ).then((value) async {
             // ここで画面遷移から戻ってきたことを検知できる
-            print('モドてきた');
             String switchType = switchButtonService.getSwitchType();
             model.getItems(switchType);
             model.getItems(switchType);
@@ -416,7 +402,7 @@ _showItemDetail(BuildContext context, Item item, Member member,
                         onPressed: () async {
                           List<Member> members =
                               await AddUpdateMemberModel().getMembers();
-                          // アイテム追加ダイアログ呼び出し
+                          // タスク追加ダイアログ呼び出し
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -443,7 +429,7 @@ _showItemDetail(BuildContext context, Item item, Member member,
 //                  onPressed: () async {
 //                    List<Member> members =
 //                        await AddUpdateMemberModel().getMembers();
-//                    // アイテム追加ダイアログ呼び出し
+//                    // タスク追加ダイアログ呼び出し
 //                    Navigator.push(
 //                      context,
 //                      MaterialPageRoute(
