@@ -38,7 +38,7 @@ class Footer extends StatelessWidget {
             Icons.leave_bags_at_home,
             color: footerType == 'Trip' ? Colors.blue : Colors.grey,
           ),
-          label: 'Trip',
+          label: 'Event',
         ),
       ],
       currentIndex: _selectedIndex,
