@@ -67,19 +67,19 @@ class AddUpdateTripModel extends ChangeNotifier {
       throw ('タイトルを入力してください。');
     }
     if (trip.eventAt == null || trip.eventAt == '') {
-      throw ('出発日を選択してください。');
+      throw ('日付を選択してください。');
     }
-    if (trip.eventEndAt == null || trip.eventEndAt == '') {
-      throw ('帰宅日を選択してください。');
-    }
+//    if (trip.eventEndAt == null || trip.eventEndAt == '') {
+//      throw ('帰宅日を選択してください。');
+//    }
     if (trip.name.length > 10) {
       throw ('タイトルは10文字未満にしてください。');
     }
     DateTime startTime = DateTime.parse(trip.eventAt);
-    DateTime endTime = DateTime.parse(trip.eventEndAt);
-    if (startTime.isAfter(endTime)) {
-      throw ('帰宅日は出発日と同じ日付か、それ以降の日付にしてください。');
-    }
+//    DateTime endTime = DateTime.parse(trip.eventEndAt);
+//    if (startTime.isAfter(endTime)) {
+//      throw ('帰宅日は出発日と同じ日付か、それ以降の日付にしてください。');
+//    }
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'trips';
@@ -105,19 +105,19 @@ class AddUpdateTripModel extends ChangeNotifier {
       throw ('タイトルを入力してください。');
     }
     if (updatedTrip.eventAt == null || updatedTrip.eventAt == '') {
-      throw ('出発日を選択してください。');
+      throw ('日付を選択してください。');
     }
-    if (updatedTrip.eventEndAt == null || updatedTrip.eventEndAt == '') {
-      throw ('帰宅日を選択してください。');
-    }
+//    if (updatedTrip.eventEndAt == null || updatedTrip.eventEndAt == '') {
+//      throw ('帰宅日を選択してください。');
+//    }
     if (updatedTrip.name.length > 10) {
       throw ('タイトルは10文字未満にしてください。');
     }
     DateTime startTime = DateTime.parse(updatedTrip.eventAt);
-    DateTime endTime = DateTime.parse(updatedTrip.eventEndAt);
-    if (startTime.isAfter(endTime)) {
-      throw ('帰宅日は出発日と同じ日付か、それ以降の日付にしてください。');
-    }
+//    DateTime endTime = DateTime.parse(updatedTrip.eventEndAt);
+//    if (startTime.isAfter(endTime)) {
+//      throw ('帰宅日は出発日と同じ日付か、それ以降の日付にしてください。');
+//    }
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final key = 'trips';
@@ -227,9 +227,9 @@ class AddUpdateTripModel extends ChangeNotifier {
   }
 
   // イベント終了日付
-  String eventEndDate;
-  setEventEndDate(String pickDate) {
-    eventEndDate = pickDate;
-    notifyListeners();
-  }
+//  String eventEndDate;
+//  setEventEndDate(String pickDate) {
+//    eventEndDate = pickDate;
+//    notifyListeners();
+//  }
 }

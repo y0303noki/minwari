@@ -105,7 +105,7 @@ class AddItemPage extends StatelessWidget {
                     controller: itemMemoEditingController,
                   ),
                   TextButton(
-                    child: Text(!isUpdate ? '追加' : '更新'),
+                    child: Text(!isUpdate ? '追加' : '保存'),
                     onPressed: () async {
                       model.title = itemNameEditingController.text;
 //                      model.member = personEditingController.text;

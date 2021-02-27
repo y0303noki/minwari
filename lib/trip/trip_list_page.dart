@@ -38,7 +38,7 @@ class TripListPage extends StatelessWidget {
             appBar: AppBar(
               actions: [],
               title: Text(
-                'Trip',
+                'Event',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -150,7 +150,7 @@ class TripListPage extends StatelessWidget {
             child: InkResponse(
               enableFeedback: true,
               onTap: () async {
-                // ダブルタップで旅切り替え
+                // タップで旅切り替え
                 await AddUpdateTripModel().selectedTrip(selectedTrip);
                 FooterNavigationService footerNavigationService =
                     FooterNavigationService();
@@ -200,12 +200,12 @@ class TripListPage extends StatelessWidget {
                             fontSize: 15,
                           ),
                         ),
-                        Text(
-                          selectedTrip.eventEndAt,
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
+//                        Text(
+//                          selectedTrip.eventEndAt,
+//                          style: TextStyle(
+//                            fontSize: 15,
+//                          ),
+//                        ),
                       ],
                     ),
                   ),

@@ -24,7 +24,7 @@ class AddUpdateItemModel extends ChangeNotifier {
     if (item.title == null || item.title.length <= 0) {
       throw ('タイトルを入力してください。');
     }
-    if (item.money == null || item.money <= 0) {
+    if (item.money == null || item.money < 0) {
       throw ('金額を入力してください。');
     }
     if (item.memberId == null) {
@@ -118,7 +118,9 @@ class AddUpdateItemModel extends ChangeNotifier {
 
     // stringからList<Item>にデコード
     List<Item> itemsDecoded = Item.decodeItems(itemsData);
+
     if (itemsDecoded.isEmpty || itemsDecoded == null) {
+      notifyListeners();
       return null;
     }
     // 更新日が最新順にソート
