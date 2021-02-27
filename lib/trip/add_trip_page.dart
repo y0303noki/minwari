@@ -19,7 +19,7 @@ class AddTripPage extends StatelessWidget {
   final tripNameEditingController = TextEditingController();
   final tripMemoEditingController = TextEditingController();
   final tripEventDateEditingController = TextEditingController();
-  final tripEventEndDateEditingController = TextEditingController();
+//  final tripEventEndDateEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +30,9 @@ class AddTripPage extends StatelessWidget {
       if (trip.eventAt != null) {
         tripEventDateEditingController.text = trip.eventAt;
       }
-      if (trip.eventEndAt != null) {
-        tripEventEndDateEditingController.text = trip.eventEndAt;
-      }
+//      if (trip.eventEndAt != null) {
+//        tripEventEndDateEditingController.text = trip.eventEndAt;
+//      }
     }
 
     return MaterialApp(
@@ -72,11 +72,11 @@ class AddTripPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text(isUpdate ? '旅行を更新' : '旅行を追加'),
+                  Text(isUpdate ? 'イベントを更新' : 'イベントを追加'),
                   TextField(
                     autofocus: true,
                     decoration: InputDecoration(
-                      labelText: '旅行名',
+                      labelText: 'イベント名',
                     ),
                     controller: tripNameEditingController,
                   ),
@@ -86,7 +86,7 @@ class AddTripPage extends StatelessWidget {
                   ),
                   TextField(
                     readOnly: true,
-                    decoration: InputDecoration(labelText: '出発日'),
+                    decoration: InputDecoration(labelText: '日付'),
                     controller: tripEventDateEditingController,
                     onTap: () async {
                       // tripの更新なら初期値を更新前でセット
@@ -116,105 +116,111 @@ class AddTripPage extends StatelessWidget {
                       }
                     },
                   ),
-                  TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(labelText: '帰宅日'),
-                    controller: tripEventEndDateEditingController,
-                    onTap: () async {
-                      // tripの更新なら初期値を更新前でセット
-                      DateTime initial = DateTime.now();
-                      if (tripEventEndDateEditingController.text != '') {
-                        initial = DateTime.parse(
-                            tripEventEndDateEditingController.text);
-                      }
-
-                      final DateTime picked = await showDatePicker(
-                          context: context,
-                          initialDate: initial,
-                          firstDate: DateTime(2018),
-                          lastDate: DateTime.now().add(Duration(days: 360)));
-                      if (picked != null) {
-                        final year = picked.year;
-                        final month = picked.month < 10
-                            ? '0${picked.month}'
-                            : '${picked.month}';
-                        final day = picked.day < 10
-                            ? '0${picked.day}'
-                            : '${picked.day}';
-                        final eventDateStr =
-                            '${year.toString()}-$month-${day.toString()}';
-                        tripEventEndDateEditingController.text = eventDateStr;
-                        // 日時反映
-                      }
-                    },
-                  ),
-                  TextButton(
-                    child: Text(isUpdate ? '編集' : '追加'),
-                    onPressed: () async {
-                      model.name = tripNameEditingController.text;
-                      model.memo = tripMemoEditingController.text;
-                      model.eventDate = tripEventDateEditingController.text;
-                      model.eventEndDate =
-                          tripEventEndDateEditingController.text;
-                      if (isUpdate) {
-                        await updateTrip(model, context, trip);
-                      } else {
-                        await addTrip(model, context);
-                      }
-                    },
-                  ),
-                  Visibility(
-                    // 編集モードのの時だけ削除ボタンを表示する
-                    visible: isUpdate,
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          primary: Colors.red,
-                        ),
-                        child: Text(
-                          '削除',
-                        ),
+//                  TextField(
+//                    readOnly: true,
+//                    decoration: InputDecoration(labelText: '帰宅日'),
+//                    controller: tripEventEndDateEditingController,
+//                    onTap: () async {
+//                      // tripの更新なら初期値を更新前でセット
+//                      DateTime initial = DateTime.now();
+//                      if (tripEventEndDateEditingController.text != '') {
+//                        initial = DateTime.parse(
+//                            tripEventEndDateEditingController.text);
+//                      }
+//
+//                      final DateTime picked = await showDatePicker(
+//                          context: context,
+//                          initialDate: initial,
+//                          firstDate: DateTime(2018),
+//                          lastDate: DateTime.now().add(Duration(days: 360)));
+//                      if (picked != null) {
+//                        final year = picked.year;
+//                        final month = picked.month < 10
+//                            ? '0${picked.month}'
+//                            : '${picked.month}';
+//                        final day = picked.day < 10
+//                            ? '0${picked.day}'
+//                            : '${picked.day}';
+//                        final eventDateStr =
+//                            '${year.toString()}-$month-${day.toString()}';
+//                        tripEventEndDateEditingController.text = eventDateStr;
+//                        // 日時反映
+//                      }
+//                    },
+//                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        child: Text(isUpdate ? '保存' : '追加'),
                         onPressed: () async {
-                          return await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("削除しますか？"),
-                                content: Text('この項目を削除すると復元することはできません。'),
-                                actions: [
-                                  FlatButton(
-                                    onPressed: () async {
-                                      await model.deleteTrip(trip);
-                                      // ダイアログを消してtrip画面まで戻る
-                                      Navigator.of(context).pop();
-                                      Navigator.pushReplacement(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation1,
-                                                  animation2) =>
-                                              TripListPage(),
-                                          transitionDuration:
-                                              Duration(seconds: 0),
+                          model.name = tripNameEditingController.text;
+                          model.memo = tripMemoEditingController.text;
+                          model.eventDate = tripEventDateEditingController.text;
+//                      model.eventEndDate =
+//                          tripEventEndDateEditingController.text;
+                          if (isUpdate) {
+                            await updateTrip(model, context, trip);
+                          } else {
+                            Trip newTrip = await addTrip(model, context);
+                            await AddUpdateTripModel().selectedTrip(newTrip);
+                          }
+                        },
+                      ),
+                      Visibility(
+                        // 編集モードのの時だけ削除ボタンを表示する
+                        visible: isUpdate,
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                              primary: Colors.red,
+                            ),
+                            child: Text(
+                              '削除',
+                            ),
+                            onPressed: () async {
+                              return await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text("削除しますか？"),
+                                    content: Text('この項目を削除すると復元することはできません。'),
+                                    actions: [
+                                      FlatButton(
+                                        onPressed: () async {
+                                          await model.deleteTrip(trip);
+                                          // ダイアログを消してtrip画面まで戻る
+                                          Navigator.of(context).pop();
+                                          Navigator.pushReplacement(
+                                            context,
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation1,
+                                                      animation2) =>
+                                                  TripListPage(),
+                                              transitionDuration:
+                                                  Duration(seconds: 0),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text(
+                                          '削除する',
+                                          style: TextStyle(color: Colors.red),
                                         ),
-                                      );
-                                    },
-                                    child: const Text(
-                                      '削除する',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ),
-                                  FlatButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: const Text(
-                                      'キャンセル',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ),
-                                ],
+                                      ),
+                                      FlatButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text(
+                                          'キャンセル',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               );
-                            },
-                          );
-                        }),
+                            }),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -226,19 +232,19 @@ class AddTripPage extends StatelessWidget {
   }
 }
 
-Future addTrip(AddUpdateTripModel model, BuildContext context) async {
+Future<Trip> addTrip(AddUpdateTripModel model, BuildContext context) async {
   try {
     String thumbnail = await makeThumbnails(model);
     final String now = DateTime.now().toString();
     final String eventDate = model.eventDate.toString();
-    final String eventEndAt = model.eventEndDate.toString();
+//    final String eventEndAt = model.eventEndDate.toString();
     final Trip newTrip = Trip(
         id: Uuid().v1(),
         name: model.name,
         memo: model.memo,
         thumbnail: thumbnail,
         eventAt: eventDate,
-        eventEndAt: eventEndAt,
+        eventEndAt: '',
         updatedAt: now,
         createdAt: now);
     await model.addTrip(newTrip);
@@ -266,6 +272,7 @@ Future addTrip(AddUpdateTripModel model, BuildContext context) async {
     );
     await AddUpdateItemModel().addItem(sampleItem);
     Navigator.of(context).pop();
+    return newTrip;
   } catch (e) {
     showDialog(
       context: context,
@@ -293,7 +300,7 @@ Future updateTrip(
     updatedTrip.name = model.name;
     updatedTrip.memo = model.memo;
     updatedTrip.eventAt = model.eventDate;
-    updatedTrip.eventEndAt = model.eventEndDate;
+//    updatedTrip.eventEndAt = model.eventEndDate;
     updatedTrip.updatedAt = now;
     await model.updateTrip(updatedTrip);
     await showDialog(

@@ -85,7 +85,7 @@ class AddMemberPage extends StatelessWidget {
                     controller: memberMemoEditingController,
                   ),
                   TextButton(
-                    child: Text(isUpdate ? '更新' : '追加'),
+                    child: Text(isUpdate ? '保存' : '追加'),
                     onPressed: () async {
                       model.name = memberNameEditingController.text;
                       model.memo = memberMemoEditingController.text;
