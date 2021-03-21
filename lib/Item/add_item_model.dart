@@ -19,6 +19,7 @@ class AddUpdateItemModel extends ChangeNotifier {
   List<Item> items = [];
   List<Member> members;
   Trip selectedTrip;
+  SwitchButtonService switchButtonService = SwitchButtonService();
 
   Future addItem(Item item) async {
     if (item.title == null || item.title.length <= 0) {
@@ -88,6 +89,7 @@ class AddUpdateItemModel extends ChangeNotifier {
   }
 
   Future getItems(String switchType) async {
+    switchType = switchButtonService.getSwitchType();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // ストレージからtripidを探す
     String selectedTripId = await AddUpdateTripModel().getSelectedTripId();
@@ -126,10 +128,10 @@ class AddUpdateItemModel extends ChangeNotifier {
     // 更新日が最新順にソート
 //    itemsDecoded.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
-    if (switchType == SwitchType.All) {
-    } else if (switchType == SwitchType.UN_PAID) {
+    if (switchType == SwitchType.ALL) {
+    } else if (switchType == SwitchType.TODO) {
       itemsDecoded = itemsDecoded.where((item) => !item.isPaid).toList();
-    } else if (switchType == SwitchType.PAID) {
+    } else if (switchType == SwitchType.DONE) {
       itemsDecoded = itemsDecoded.where((item) => item.isPaid).toList();
     } else {}
 
@@ -190,9 +192,9 @@ class AddUpdateItemModel extends ChangeNotifier {
     List<Item> items = await getItems2(selectedTripId);
 
     items.removeWhere((item) => item.id == paidItem.id);
-    if (type == SwitchType.UN_PAID) {
+    if (type == SwitchType.TODO) {
       paidItem.isPaid = true;
-    } else if (type == SwitchType.PAID) {
+    } else if (type == SwitchType.DONE) {
       paidItem.isPaid = false;
     }
 

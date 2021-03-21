@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       home: ChangeNotifierProvider<AddUpdateItemModel>(
-        create: (_) => AddUpdateItemModel()..getItems(SwitchType.UN_PAID),
+        create: (_) => AddUpdateItemModel()..getItems(null),
         child: Consumer<AddUpdateItemModel>(
             builder: (consumerContext, model, child) {
           print('consumer');
@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
 
           this.switchType = switchButtonService.getSwitchType();
           if (this.switchType == null) {
-            this.switchType = SwitchType.UN_PAID;
+            this.switchType = SwitchType.TODO;
           }
 
           return Scaffold(
@@ -79,13 +79,13 @@ class HomePage extends StatelessWidget {
                                     topLeft: Radius.circular(15.0),
                                     topRight: Radius.circular(15.0))),
                             child: const Text('TODO'),
-                            color: this.switchType == SwitchType.UN_PAID
+                            color: this.switchType == SwitchType.TODO
                                 ? Theme.of(context).scaffoldBackgroundColor
                                 : Colors.grey[600],
                             onPressed: () {
                               switchButtonService
-                                  .setSwitchType(SwitchType.UN_PAID);
-                              model.getItems(SwitchType.UN_PAID);
+                                  .setSwitchType(SwitchType.TODO);
+                              model.getItems(SwitchType.TODO);
                             },
                           ),
                         ),
@@ -103,7 +103,7 @@ class HomePage extends StatelessWidget {
                                     topRight: Radius.circular(15.0))),
 
                             child: const Text('DONE'),
-                            color: this.switchType == SwitchType.PAID
+                            color: this.switchType == SwitchType.DONE
                                 ? Theme.of(context).scaffoldBackgroundColor
                                 : Colors.grey[600],
 //                          shape: Border(
@@ -111,8 +111,8 @@ class HomePage extends StatelessWidget {
 //                          ),
                             onPressed: () {
                               switchButtonService
-                                  .setSwitchType(SwitchType.PAID);
-                              model.getItems(SwitchType.PAID);
+                                  .setSwitchType(SwitchType.DONE);
+                              model.getItems(SwitchType.DONE);
                             },
                           ),
                         ),
@@ -129,13 +129,13 @@ class HomePage extends StatelessWidget {
                                     topLeft: Radius.circular(15.0),
                                     topRight: Radius.circular(15.0))),
                             child: const Text('ALL'),
-                            color: this.switchType == SwitchType.All
+                            color: this.switchType == SwitchType.ALL
                                 ? Theme.of(context).scaffoldBackgroundColor
                                 : Colors.grey[600],
                             onPressed: () {
-                              switchType = SwitchType.All;
-                              switchButtonService.setSwitchType(SwitchType.All);
-                              model.getItems(SwitchType.All);
+                              switchType = SwitchType.ALL;
+                              switchButtonService.setSwitchType(SwitchType.ALL);
+                              model.getItems(SwitchType.ALL);
                             },
                           ),
                         ),
@@ -149,23 +149,25 @@ class HomePage extends StatelessWidget {
 //                  )
 //                ]),
                 Container(
-                  child: ElevatedButton(
-                    child: const Text('Total'),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      primary: Colors.green,
-                      onPrimary: Colors.black87,
-                      shape: const StadiumBorder(),
+                  child: SizedBox(
+                    width: 150,
+                    child: ElevatedButton(
+                      child: Text('Total ${this.switchType}'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                        onPrimary: Colors.black87,
+                        shape: const StadiumBorder(),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TotalPage(
+                                  model.items, model.members, this.switchType),
+                              fullscreenDialog: true),
+                        ).then((value) async {});
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                TotalPage(model.items, model.members),
-                            fullscreenDialog: true),
-                      ).then((value) async {});
-                    },
                   ),
                 ),
                 Container(
@@ -198,8 +200,8 @@ class HomePage extends StatelessWidget {
                         fullscreenDialog: true),
                   ).then((value) async {
                     // ここで画面遷移から戻ってきたことを検知できる
-                    switchButtonService.setSwitchType(SwitchType.UN_PAID);
-                    model.getItems(SwitchType.UN_PAID);
+                    switchButtonService.setSwitchType(SwitchType.TODO);
+                    model.getItems(SwitchType.TODO);
                   });
                 },
                 child: Icon(Icons.add),
@@ -267,7 +269,7 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
     Member member =
         members.firstWhere((m) => m.id == item.memberId, orElse: () => null);
     listItems.add(Dismissible(
-      direction: type == SwitchType.All
+      direction: type == SwitchType.ALL
           ? DismissDirection.endToStart
           : DismissDirection.horizontal,
       key: Key(item.id),
@@ -328,11 +330,11 @@ List<Widget> _setItems(List<Item> items, List<Member> members,
       // スワイプ方向がendToStart（画面左から右）の場合のバックグラウンドの設定
       background: Container(
         alignment: Alignment.centerLeft,
-        color: type == SwitchType.UN_PAID ? Colors.green : Colors.orange,
+        color: type == SwitchType.TODO ? Colors.green : Colors.orange,
         child: Padding(
           padding: EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
           child: Icon(
-              type == SwitchType.UN_PAID
+              type == SwitchType.TODO
                   ? Icons.check_circle
                   : Icons.radio_button_unchecked,
               color: Colors.white),

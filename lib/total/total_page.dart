@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:trip_money_local/domain/db_table/item.dart';
 import 'package:trip_money_local/domain/db_table/member.dart';
+import 'package:trip_money_local/domain/db_table/switchType.dart';
 
 class TotalPage extends StatelessWidget {
-  TotalPage(this.items, this.members);
+  TotalPage(this.items, this.members, this.switchType);
   List<Item> items;
   List<Member> members;
+  String switchType;
   @override
   Widget build(BuildContext context) {
-    items.forEach((element) {
-      print(element.title);
-    });
     return Scaffold(
       appBar: AppBar(
         actions: [],
         title: Text(
-          'Total',
+          'Total $switchType',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -51,7 +50,7 @@ class TotalPage extends StatelessWidget {
         child: ListTile(
           leading: Icon(Icons.person_outline_rounded),
           title: Text(member.name),
-          trailing: Text('$moneyEachMember'),
+          trailing: Text('$moneyEachMember円'),
         ),
       );
       resultListTile.add(widget);
@@ -60,8 +59,9 @@ class TotalPage extends StatelessWidget {
 
     var totalWidget = Card(
       child: ListTile(
-        title: Text('全ての合計'),
-        subtitle: Text('$totalMoney'),
+//        leading: Text('SUM'),
+        title: Text('合計'),
+        trailing: Text('$totalMoney円'),
       ),
     );
     resultListTile.insert(0, totalWidget);
