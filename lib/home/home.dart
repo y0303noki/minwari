@@ -11,6 +11,7 @@ import 'package:trip_money_local/footer/footer.dart';
 import 'package:trip_money_local/footer/trip_footer.dart';
 import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/member_list_page.dart';
+import 'package:trip_money_local/total/total_page.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -51,9 +52,9 @@ class HomePage extends StatelessWidget {
             appBar: AppBar(
               centerTitle: false,
 // そのうち設定アイコンに機能を持たせる
-//              actions: [
+              actions: [
 //                IconButton(icon: Icon(Icons.settings), onPressed: () async {}),
-//              ],
+              ],
               title: Text(
                 'Home',
                 style: TextStyle(
@@ -148,8 +149,28 @@ class HomePage extends StatelessWidget {
 //                  )
 //                ]),
                 Container(
+                  child: ElevatedButton(
+                    child: const Text('Total'),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      primary: Colors.green,
+                      onPrimary: Colors.black87,
+                      shape: const StadiumBorder(),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                TotalPage(model.items, model.members),
+                            fullscreenDialog: true),
+                      ).then((value) async {});
+                    },
+                  ),
+                ),
+                Container(
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(0.0),
                     child: Container(),
                   ),
                 ),
