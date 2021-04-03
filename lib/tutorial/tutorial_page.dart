@@ -11,12 +11,11 @@ class TutorialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    Container background = Container(color: Colors.white);
 
     TextStyle messageStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 20,
-      color: Theme.of(context).primaryColor,
+      color: Theme.of(context).textTheme.bodyText1.color,
     );
 
     for (int i = 0; i < stackCount; i++) {
@@ -57,15 +56,25 @@ class TutorialPage extends StatelessWidget {
       }
 
       Stack static = Stack(children: [
-        background,
         Column(children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Image.asset(
-                'images/tutorial$i.png',
-                height: size.height * 0.6,
+            child: Container(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 5.0,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Image.asset(
+                    'images/tutorial$i.png',
+                    height: size.height * 0.6,
+                  ),
+                ),
               ),
             ),
           ),
@@ -95,28 +104,16 @@ class TutorialPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
         actions: [],
         title: Text(
-          'Tutorial',
+          '操作説明',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
-            color: Theme.of(context).primaryColor,
+//            color: Theme.of(context).primaryColor,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black87,
         centerTitle: true,
         elevation: 0.0,
       ),

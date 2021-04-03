@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
 // そのうち設定アイコンに機能を持たせる
               actions: [
                 IconButton(
-                    icon: Icon(Icons.description),
+                    icon: Icon(Icons.settings),
                     onPressed: () async {
                       Navigator.push(
                         context,
