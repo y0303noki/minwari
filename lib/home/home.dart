@@ -13,6 +13,7 @@ import 'package:trip_money_local/member/add_member_model.dart';
 import 'package:trip_money_local/member/member_list_page.dart';
 import 'package:trip_money_local/total/total_page.dart';
 import 'package:trip_money_local/trip/trip_list_page.dart';
+import 'package:trip_money_local/tutorial/tutorial_page.dart';
 
 class HomePage extends StatelessWidget {
   List<Widget> listTiles = [];
@@ -53,7 +54,16 @@ class HomePage extends StatelessWidget {
               centerTitle: false,
 // そのうち設定アイコンに機能を持たせる
               actions: [
-//                IconButton(icon: Icon(Icons.settings), onPressed: () async {}),
+                IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TutorialPage(),
+                            fullscreenDialog: true),
+                      );
+                    }),
               ],
               title: Text(
                 'Home',
